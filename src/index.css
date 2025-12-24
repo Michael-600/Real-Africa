@@ -23,40 +23,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-/* Top glowing overscroll */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 120px;
-  pointer-events: none;
-  z-index: 999;
-  background: radial-gradient(
-    circle at top center,
-    rgba(59, 130, 246, 0.45) 0%,
-    rgba(0, 0, 0, 0.15) 0%,
-    transparent 80%
-  );
-  filter: blur(22px);
-  opacity: 0.45;
-}
-
-/* Scroll tip */
-.scroll-tip {
-  position: fixed;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  pointer-events: none;
-  z-index: 1000;
-  animation: scrollTipPulse 2s infinite;
-}
 
 @keyframes scrollTipPulse {
   0% { opacity: 0.3; transform: translateX(-50%) translateY(0); }

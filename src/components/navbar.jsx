@@ -7,30 +7,33 @@ const Navbar = () => {
   useEffect(() => {
     const indicator = document.querySelector(".scroll-indicator");
   
-    let lastScrollY = 0;
-  
-    const onScroll = () => {
-      const currentY = window.scrollY;
-  
-      // At top + user tries to scroll up
-      if (currentY === 0) {
+    const onWheel = (e) => {
+      // Only trigger if user scrolls UP at the top
+      if (window.scrollY === 0 && e.deltaY < 0) {
         indicator?.classList.add("visible");
-      } else {
-        indicator?.classList.remove("visible");
-      }
   
-      lastScrollY = currentY;
+        // auto-hide after a moment
+        clearTimeout(window.__scrollHintTimeout);
+        window.__scrollHintTimeout = setTimeout(() => {
+          indicator?.classList.remove("visible");
+        }, 1200);
+      }
     };
   
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: true });
   
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+    };
   }, []);
   
   return (
     <>
       {/* Inline CSS for Navbar */}
       <style>{`
+        :root {
+          --font-grotesk: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
         .navbar {
           height: 88px;
           padding: 0 48px;
@@ -39,7 +42,7 @@ const Navbar = () => {
           align-items: center;
           justify-content: flex-start;
           position: relative;
-          z-index: 100;
+          z-index: 1001;
         }
 
         .navbar__logo img {
@@ -64,7 +67,7 @@ const Navbar = () => {
         .navbar__links a {
           color: #ffffff;
           text-decoration: none;
-          font-family: "Space Grotesk", sans-serif;
+          font-family: var(--font-grotesk);
           font-size: 18px;
           font-weight: 500;
           position: relative;
@@ -90,7 +93,7 @@ const Navbar = () => {
           border-radius: 8px;
           color: #1f2230;
           padding: 18px 32px;
-          font-family: "Space Grotesk", sans-serif;
+          font-family: var(--font-grotesk);
           font-size: 20px;
           font-weight: 700;
           border: none;
@@ -109,7 +112,7 @@ const Navbar = () => {
 
         /* Mobile dropdown */
         .mobile-menu {
-          position: absolute;
+          position: fixed;
           top: 88px;
           left: 0;
           width: 100%;
@@ -122,6 +125,7 @@ const Navbar = () => {
           opacity: 0;
           pointer-events: none;
           transition: all 0.25s ease;
+          z-index: 1000;
         }
 
         .mobile-menu.open {
@@ -134,6 +138,7 @@ const Navbar = () => {
           color: white;
           font-size: 20px;
           text-decoration: none;
+          font-family: var(--font-grotesk);
         }
         
         /* Scroll down indicator */
@@ -146,7 +151,7 @@ const Navbar = () => {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: var(--font-grotesk);
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -185,6 +190,7 @@ const Navbar = () => {
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
+  font-family: var(--font-grotesk);
 }
 
 /* Responsive */
@@ -192,6 +198,7 @@ const Navbar = () => {
   .navbar__links,
   .navbar__cta {
     display: none;
+  }
 
   .menu-btn {
     display: block;
