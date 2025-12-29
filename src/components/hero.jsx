@@ -2,7 +2,6 @@ function Hero() {
   return (
     <section
       style={{
-        width: "100%",
         minHeight: "100vh",
         position: "relative",
         backgroundImage: "url('/assets/hero_image.jpg')",

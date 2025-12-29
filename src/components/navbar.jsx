@@ -31,22 +31,33 @@ const Navbar = () => {
     <>
       {/* Inline CSS for Navbar */}
       <style>{`
+        body {
+          overflow-x: hidden;
+        }
         :root {
           --font-grotesk: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         }
+        *, *::before, *::after {
+          box-sizing: border-box;
+        }
         .navbar {
           height: 88px;
-          padding: 0 48px;
+          padding: 0 16px;
           background: linear-gradient(90deg, #1f2230 0%, #232536 100%);
           display: flex;
           align-items: center;
           justify-content: flex-start;
           position: relative;
           z-index: 1001;
+          box-sizing: border-box;
+          width: 100%;
+          overflow-x: hidden;
+          max-width: 100vw;
+          overflow: hidden;
         }
 
         .navbar__logo img {
-          height: 48px;
+          height: clamp(32px, 5vw, 48px);
           width: auto;
           border-radius: 4px;
         }
@@ -56,12 +67,16 @@ const Navbar = () => {
           display: flex;
           align-items: center;
           gap: 32px;
+          min-width: 0;
+          flex-shrink: 1;
         }
 
         .navbar__links {
           display: flex;
           align-items: center;
           gap: 40px;
+          flex-wrap: nowrap;
+          white-space: nowrap;
         }
 
         .navbar__links a {
@@ -98,6 +113,8 @@ const Navbar = () => {
           font-weight: 700;
           border: none;
           cursor: pointer;
+          white-space: nowrap;
+          flex-shrink: 0;
         }
 
         /* Hamburger */
@@ -108,12 +125,13 @@ const Navbar = () => {
           color: white;
           font-size: 28px;
           cursor: pointer;
+          line-height: 1;
         }
 
         /* Mobile dropdown */
         .mobile-menu {
           position: fixed;
-          top: 88px;
+          top: 72px;
           left: 0;
           width: 100%;
           background: #1f2230;
@@ -126,6 +144,9 @@ const Navbar = () => {
           pointer-events: none;
           transition: all 0.25s ease;
           z-index: 1000;
+          box-sizing: border-box;
+          overflow-x: hidden;
+          max-width: 100vw;
         }
 
         .mobile-menu.open {
@@ -139,6 +160,7 @@ const Navbar = () => {
           font-size: 20px;
           text-decoration: none;
           font-family: var(--font-grotesk);
+          padding: 8px 0;
         }
         
         /* Scroll down indicator */
@@ -160,6 +182,8 @@ const Navbar = () => {
   pointer-events: none;
   z-index: 999;
   transition: opacity 0.25s ease;
+  max-width: 100%;
+  width: fit-content;
 }
 
 .scroll-indicator.visible {
@@ -203,6 +227,15 @@ const Navbar = () => {
   .menu-btn {
     display: block;
   }
+
+  .navbar {
+    height: 72px;
+    padding: 0 16px;
+  }
+
+  .navbar__logo img {
+    height: 36px;
+  }
 }
       `}</style>
 
@@ -219,10 +252,10 @@ const Navbar = () => {
             <a href="/">Home</a>
             <a href="/blog">Blog</a>
             <a href="/about">About Us</a>
-            <a href="/contact">Contact us</a>
+            <a href="/feature">Get Featured</a>
           </div>
 
-          <button className="navbar__cta">Get Featured</button>
+          <button className="navbar__cta">Get Mentored</button>
 
           <button
             className="menu-btn"
@@ -245,9 +278,9 @@ const Navbar = () => {
         <a onClick={() => setOpen(false)} href="/">Home</a>
         <a onClick={() => setOpen(false)} href="/blog">Blog</a>
         <a onClick={() => setOpen(false)} href="/about">About Us</a>
-        <a onClick={() => setOpen(false)} href="/contact">Contact us</a>
+        <a onClick={() => setOpen(false)} href="/getmentored">Get Featured</a>
 
-        <button className="mobile-cta">Get Featured</button>
+        <button className="mobile-cta">Get Mentored</button>
       </div>
     </>
   );

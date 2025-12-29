@@ -1,15 +1,9 @@
-import FeaturedPosts from './components/featured_posts';
-import Navbar from './components/navbar';
-import Hero from './components/hero';
+import Home from './pages/Home'
 
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <Hero/> 
-    <FeaturedPosts />
-    </>
+    <Home />
   );
 }
 
