@@ -10,7 +10,6 @@ const SeatSelector = () => {
   const seats = Array.from({ length: TOTAL_SEATS }, (_, i) => ({
     id: i + 1,
     booked: i < BOOKED_SEATS,
-    almostFull: i >= BOOKED_SEATS && i < BOOKED_SEATS + 4,
   }));
 
   return (
@@ -19,29 +18,6 @@ const SeatSelector = () => {
         <strong>Next Live Meet:</strong> January 15th, 2026 ·{" "}
         {TOTAL_SEATS - BOOKED_SEATS} seats remaining
       </p>
-
-      <div style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "6px 10px",
-        borderRadius: 999,
-        background: "rgba(251,146,60,0.12)",
-        color: "#9a3412",
-        fontSize: 12,
-        fontWeight: 600,
-        width: "fit-content",
-        marginBottom: 12,
-      }}>
-        <span style={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          background: "#fb923c",
-          display: "inline-block",
-        }} />
-        Almost full
-      </div>
 
       <div className="seat-grid" style={{
         maxWidth: 360,
