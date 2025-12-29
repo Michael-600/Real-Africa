@@ -66,8 +66,6 @@ const SeatSelector = () => {
                   ? "#e5e7eb"
                   : isSelected
                   ? "#fde68a"
-                  : seat.almostFull
-                  ? "linear-gradient(135deg, #fdba74, #fb923c)"
                   : "#374151",
                 border: isSelected ? "2px solid #f59e0b" : "1px solid #6b7280",
                 display: "flex",
@@ -97,7 +95,7 @@ const SeatSelector = () => {
         className="seat-cta"
         disabled={!selectedSeat}
       >
-        {selectedSeat ? `Seat ${selectedSeat} Selected` : "Select a Seat"}
+        {selectedSeat ? `Reserve Seat ${selectedSeat}` : "Select a Seat"}
       </button>
     </div>
   );
