@@ -1,5 +1,3 @@
-
-
 import React from "react";
 
 /**
@@ -19,43 +17,43 @@ const tiers = [
     level: 1,
     name: "5‑Figure Entrepreneurs",
     description: "Early-stage builders learning execution, discipline, and consistency.",
-    price: "$29 / month",
+    price: "Free seats",
   },
   {
     level: 2,
     name: "6‑Figure Entrepreneurs",
     description: "Operators refining systems, sales, and predictable income.",
-    price: "$59 / month",
+    price: "Ksh.100 / month",
   },
   {
     level: 3,
     name: "7‑Figure Entrepreneurs",
     description: "Founders scaling teams, processes, and sustainable growth.",
-    price: "$99 / month",
+    price: "Ksh.300 / month",
   },
   {
     level: 4,
     name: "8‑Figure Entrepreneurs",
     description: "Leaders managing complexity, leverage, and market positioning.",
-    price: "$199 / month",
+    price: "Ksh.500 / month",
   },
   {
     level: 5,
     name: "9‑Figure Entrepreneurs",
     description: "Strategic thinkers operating at regional or global scale.",
-    price: "$399 / month",
+    price: "Ksh.1000 / month",
   },
   {
     level: 6,
     name: "10‑Figure Entrepreneurs",
     description: "Institutional-level builders shaping industries.",
-    price: "$699 / month",
+    price: "Ksh.5000 / month",
   },
   {
     level: 7,
     name: "11+ Figure Entrepreneurs",
     description: "Elite access to world‑class operators and capital allocators.",
-    price: "$999 / month",
+    price: "Ksh. 10,000 / month",
   },
 ];
 
@@ -72,10 +70,10 @@ export default function GetMentoredPage() {
   const hasCallAccess = nextLiveCall.tierRequired <= userTierLevel;
 
   return (
-    <div className="min-h-screen bg-zinc-100 text-zinc-900">
-      <main className="max-w-6xl mx-auto px-4 py-12 space-y-16">
+    <div className="get-mentored-page">
+      <main className="get-mentored-container">
         {/* HERO */}
-        <section className="max-w-3xl space-y-4">
+        <section className="get-mentored-hero">
           <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
             Mentorship from builders who have done it before
           </h1>
@@ -86,10 +84,9 @@ export default function GetMentoredPage() {
         </section>
 
         {/* NEXT LIVE CALL */}
-        <section className="sticky top-4 z-10">
+        <section>
           <div
-            className={`rounded-2xl border p-6 bg-white flex flex-col md:flex-row md:items-center md:justify-between gap-6 transition
-              ${!hasCallAccess ? "opacity-60 grayscale" : "border-zinc-300"}`}
+            className={`live-call ${!hasCallAccess ? "locked" : ""}`}
           >
             <div className="space-y-1">
               <p className="text-sm text-zinc-500">Next Live Call</p>
@@ -102,10 +99,7 @@ export default function GetMentoredPage() {
 
             <button
               disabled={!hasCallAccess}
-              className={`px-5 py-3 rounded-lg text-sm font-medium transition
-                ${hasCallAccess
-                  ? "bg-zinc-900 text-white hover:bg-zinc-800"
-                  : "bg-zinc-300 text-zinc-500 cursor-not-allowed"}`}
+              className={hasCallAccess ? "enabled" : "disabled"}
             >
               Join Live Call
             </button>
@@ -113,10 +107,10 @@ export default function GetMentoredPage() {
         </section>
 
         {/* TIERS */}
-        <section className="space-y-6">
+        <section className="tiers">
           <h2 className="text-2xl font-semibold">Mentorship Tiers</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="tier-grid">
             {tiers.map(tier => {
               const isActive = tier.level === userTierLevel;
               const isAccessible = tier.level <= userTierLevel;
@@ -125,16 +119,14 @@ export default function GetMentoredPage() {
               return (
                 <div
                   key={tier.level}
-                  className={`rounded-2xl border bg-white p-6 flex flex-col justify-between transition
-                    ${isLocked ? "opacity-50 grayscale" : ""}
-                    ${isActive ? "border-zinc-900" : "border-zinc-200"}`}
+                  className={`tier-card ${isActive ? "active" : ""} ${isLocked ? "locked" : ""}`}
                 >
                   <div className="space-y-3">
                     <h3 className="text-lg font-medium">{tier.name}</h3>
                     <p className="text-zinc-600 text-sm">{tier.description}</p>
-                    <p className="text-sm font-medium">{tier.price}</p>
+                    <p className="price">{tier.price}</p>
 
-                    <p className="text-xs text-zinc-500">
+                    <p className="status">
                       {isActive && "✓ Your current tier"}
                       {isAccessible && !isActive && "Included in your access"}
                       {isLocked && "Locked — upgrade required"}
@@ -145,14 +137,14 @@ export default function GetMentoredPage() {
                     {isActive && (
                       <button
                         disabled
-                        className="w-full py-2 rounded-lg text-sm font-medium bg-zinc-200 text-zinc-700"
+                        className="secondary"
                       >
                         ✓ Current Tier
                       </button>
                     )}
 
                     {!isActive && isAccessible && (
-                      <button className="w-full py-2 rounded-lg text-sm font-medium bg-zinc-900 text-white">
+                      <button className="primary">
                         Join Mentorship
                       </button>
                     )}
@@ -160,7 +152,7 @@ export default function GetMentoredPage() {
                     {isLocked && (
                       <button
                         disabled
-                        className="w-full py-2 rounded-lg text-sm font-medium bg-zinc-300 text-zinc-500 cursor-not-allowed"
+                        className="disabled"
                       >
                         Upgrade Tier
                       </button>

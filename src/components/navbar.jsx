@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 
 const Navbar = () => {
@@ -87,6 +88,9 @@ const Navbar = () => {
           font-weight: 500;
           position: relative;
         }
+        .navbar__cta {
+          text-decoration: none !important;
+        }
 
         .navbar__links a::after {
           content: "";
@@ -97,6 +101,9 @@ const Navbar = () => {
           height: 2px;
           background: #ffffff;
           transition: width 0.25s ease;
+        }
+        .navbar__cta::after {
+          display: none !important;
         }
 
         .navbar__links a:hover::after {
@@ -163,6 +170,10 @@ const Navbar = () => {
           padding: 8px 0;
         }
         
+        .mobile-menu .mobile-cta {
+          color: #1f2230 !important;
+        }
+
         /* Scroll down indicator */
 .scroll-indicator {
   position: fixed;
@@ -215,6 +226,19 @@ const Navbar = () => {
   font-weight: 700;
   cursor: pointer;
   font-family: var(--font-grotesk);
+  text-decoration: none !important;
+  color: #1f2230 !important;
+  background: #ffffff;
+  text-align: center;
+  display: block;
+}
+
+.mobile-cta:hover,
+.mobile-cta:active,
+.mobile-cta:focus,
+.mobile-cta:visited {
+  text-decoration: none;
+  color: #1f2230;
 }
 
 /* Responsive */
@@ -248,14 +272,15 @@ const Navbar = () => {
 
         <div className="navbar__right">
           <div className="navbar__links">
-            <a href="/travel">Travel</a>
-            <a href="/">Home</a>
-            <a href="/blog">Blog</a>
-            <a href="/about">About Us</a>
-            <a href="/feature">Get Featured</a>
+            
+            <Link to="/">Home</Link>
+            <Link to="/about-us">About Us</Link>
+            <Link to="/travel">Travel</Link>
+            <Link to="/">Get Featured</Link>
+
           </div>
 
-          <button className="navbar__cta">Get Mentored</button>
+          <Link to="/get-mentored" className="navbar__cta">Get Mentored</Link>
 
           <button
             className="menu-btn"
@@ -274,13 +299,19 @@ const Navbar = () => {
 
       {/* Mobile Dropdown */}
       <div className={`mobile-menu ${open ? "open" : ""}`}>
-        <a onClick={() => setOpen(false)} href="/travel">Travel</a>
-        <a onClick={() => setOpen(false)} href="/">Home</a>
-        <a onClick={() => setOpen(false)} href="/blog">Blog</a>
-        <a onClick={() => setOpen(false)} href="/about">About Us</a>
-        <a onClick={() => setOpen(false)} href="/getmentored">Get Featured</a>
+        <Link onClick={() => setOpen(false)} to="/travel">Travel</Link>
+        <Link onClick={() => setOpen(false)} to="/">Home</Link>
+        <Link onClick={() => setOpen(false)} to="/blog">Blog</Link>
+        <Link onClick={() => setOpen(false)} to="/about-us">About Us</Link>
+        <Link onClick={() => setOpen(false)} to="/get-featured">Get Featured</Link>
 
-        <button className="mobile-cta">Get Mentored</button>
+        <Link
+          to="/get-mentored"
+          className="mobile-cta"
+          onClick={() => setOpen(false)}
+        >
+          Get Mentored
+        </Link>
       </div>
     </>
   );

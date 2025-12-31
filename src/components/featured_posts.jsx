@@ -101,7 +101,7 @@ function FeaturedPosts() {
             }}
           >
             <img
-              src="public/assets/nduati.png"
+              src="/assets/nduati.png"
               alt="Featured"
               style={{
                 width: "100%",

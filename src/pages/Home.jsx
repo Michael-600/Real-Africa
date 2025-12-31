@@ -6,13 +6,12 @@ import FeaturedPosts from "../components/featured_posts";
 import SpecialPost from "../components/special_post";
 import MeetTheTeam from "../components/meet_the_team";
 import Testimonials from "../components/testimonials";
-import Member from "../components/Member";
+import Member from "../components/member";
 import Footer from "../components/footer"
 
 function Home() {
   return (
     <>
-      < Navbar />
       <Hero />
       <FeaturedPosts />
       <ChooseCategory />
@@ -21,7 +20,6 @@ function Home() {
       <MeetTheTeam />
       <Testimonials />
       <Member />
-      < Footer />
 
     </>
   );
