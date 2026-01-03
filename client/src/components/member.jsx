@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { Armchair } from "lucide-react";
 
+const useAuth = () => {
+  // TODO: replace with real auth (Supabase / Clerk / Firebase)
+  return {
+    user: null, // change to an object when logged in
+  };
+};
+
 const SeatSelector = () => {
+  const { user } = useAuth();
   const TOTAL_SEATS = 24;
   const BOOKED_SEATS = 8;
 
@@ -70,8 +78,20 @@ const SeatSelector = () => {
       <button
         className="seat-cta"
         disabled={!selectedSeat}
+        onClick={() => {
+          if (!user) {
+            alert("Please log in to reserve a seat.");
+            return;
+          }
+
+          alert(`Seat ${selectedSeat} reserved! A confirmation ticket has been sent to your email.`);
+        }}
       >
-        {selectedSeat ? `Reserve Seat ${selectedSeat}` : "Select a Seat"}
+        {!selectedSeat
+          ? "Select a Seat"
+          : !user
+          ? "Log in to reserve your seat"
+          : `Reserve Seat ${selectedSeat}`}
       </button>
     </div>
   );
@@ -82,11 +102,11 @@ const Member = () => {
     <div className="membership-wrapper">
       <section className="membership-card">
         <h2 className="membership-card__title">
-          Join the Movement.
+          Take a seat in the next live session.
         </h2>
 
         <p className="membership-card__description">
-          Join our community by reserving a seat for at least one online meeting below for free, and get to ask your questions and get mentorship directly from the entrepreneurs we interview weekly. 
+          Join our community by reserving a seat in the online meeting below for free, and get to ask your questions and get mentorship directly from the entrepreneurs we interview weekly. Reminders will be sent to those who have their seats reserved.
         </p>
 
         <SeatSelector />

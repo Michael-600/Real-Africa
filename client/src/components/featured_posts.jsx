@@ -1,3 +1,5 @@
+import React from 'react';
+
 if (typeof window !== "undefined") {
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   document.documentElement.setAttribute(

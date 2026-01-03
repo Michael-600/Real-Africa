@@ -1,3 +1,4 @@
+import React from 'react';
 import PageLayout from "../components/Layout/PageLayout";
 import AboutMission from "../components/about_mission";
 import MeetTheTeam from "../components/meet_the_team";

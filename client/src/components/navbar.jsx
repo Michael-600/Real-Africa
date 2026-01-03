@@ -1,8 +1,9 @@
+import React from 'react';
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 
-const Navbar = () => {
+const Navbar = ({ onGetFeatured }) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -276,7 +277,20 @@ const Navbar = () => {
             <Link to="/">Home</Link>
             <Link to="/about-us">About Us</Link>
             <Link to="/travel">Travel</Link>
-            <Link to="/">Get Featured</Link>
+            <button
+              className="navbar__cta"
+              style={{
+                background: "transparent",
+                color: "#ffffff",
+                padding: 0,
+                fontSize: "18px",
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+              onClick={onGetFeatured}
+            >
+              Get Featured
+            </button>
 
           </div>
 
@@ -303,7 +317,24 @@ const Navbar = () => {
         <Link onClick={() => setOpen(false)} to="/">Home</Link>
         <Link onClick={() => setOpen(false)} to="/blog">Blog</Link>
         <Link onClick={() => setOpen(false)} to="/about-us">About Us</Link>
-        <Link onClick={() => setOpen(false)} to="/get-featured">Get Featured</Link>
+        <button
+          onClick={() => {
+            setOpen(false);
+            onGetFeatured();
+          }}
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            color: "white",
+            fontSize: "20px",
+            textAlign: "left",
+            cursor: "pointer",
+            fontFamily: "var(--font-grotesk)",
+          }}
+        >
+          Get Featured
+        </button>
 
         <Link
           to="/get-mentored"

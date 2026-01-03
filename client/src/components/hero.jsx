@@ -1,5 +1,12 @@
+import React from 'react';
+import { useState } from "react";
+import GetFeatured from "../components/get-featured";
+
 function Hero() {
+  const [open, setOpen] = useState(false);
+
   return (
+    <>
     <section
       style={{
         minHeight: "100vh",
@@ -107,11 +114,17 @@ function Hero() {
             color: "#232536",
             cursor: "pointer",
           }}
+          onClick={() => setOpen(true)}
         >
-          Read More &gt;
+          Get Featured
         </button>
       </div>
     </section>
+
+    {open && (
+      <GetFeatured onClose={() => setOpen(false)} />
+    )}
+    </>
   );
 }
 

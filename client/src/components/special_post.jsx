@@ -5,7 +5,7 @@ const SpecialPost = () => {
     <section className="special-post">
       <div className="special-post__media">
         <img
-          src="./public/assets/hero_image1.jpeg"
+          src="/assets/hero_image1.jpeg"
           alt="Featured story"
           className="special-post__image"
         />
