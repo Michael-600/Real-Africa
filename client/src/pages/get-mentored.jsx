@@ -158,6 +158,112 @@ const tierCurricula = {
   ],
 };
 
+function ProgramCard({
+  title,
+  description,
+  imageSrc,
+  isLocked,
+  progressPercent,
+  expanded,
+  onToggle,
+  children,
+}) {
+  return (
+    <div
+      className={`program-card ${isLocked ? "locked-preview" : ""}`}
+      style={{ opacity: isLocked ? 0.85 : 1 }}
+    >
+      <img src={imageSrc} alt={title} className="program-card-image" />
+
+      <div className="program-card-body">
+        <h2 className="text-2xl font-semibold">{title}</h2>
+        <p className="text-sm text-zinc-500">{description}</p>
+
+        <div className="progress-bar mt-3">
+          <div className="progress-track">
+            <div
+              className="progress-fill"
+              style={{ width: `${isLocked ? 0 : progressPercent}%` }}
+            />
+          </div>
+          <div className="flex justify-between text-xs text-zinc-500 mt-1">
+            <span>{isLocked ? "0%" : `${progressPercent}%`}</span>
+          </div>
+        </div>
+
+        <button
+          className={`watch-link mt-4 ${isLocked ? "locked-button" : ""}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
+        >
+          {isLocked ? "🔒 Upgrade to Unlock" : expanded ? "Hide Modules" : "Open Program"}
+        </button>
+
+        {!isLocked && expanded && (
+          <div className="mt-4 space-y-3">
+            {children}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+function CourseCard({
+  module,
+  completedLessons,
+  totalLessons,
+  isLocked,
+  onClick,
+}) {
+  const progressPercent = isLocked
+    ? 0
+    : Math.round((completedLessons / totalLessons) * 100);
+
+  return (
+    <div
+      className={`class-module clickable ${
+        isLocked ? "locked-preview" : ""
+      }`}
+      style={{
+        opacity: isLocked ? 0.85 : 1,
+        cursor: "pointer",
+      }}
+      title={isLocked ? "Preview available – upgrade to unlock" : undefined}
+      onClick={onClick}
+    >
+      <h3 className="text-lg font-medium">{module.module}</h3>
+      <p className="text-sm text-zinc-500">{module.description}</p>
+
+      {/* Progress bar */}
+      <div className="progress-bar mt-3">
+        <div className="progress-track">
+          <div
+            className="progress-fill"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+        <p className="text-xs text-zinc-500 mt-1">
+          {completedLessons}/{totalLessons} lessons completed
+        </p>
+      </div>
+
+      {/* Action button */}
+      <button
+        className={`watch-link mt-4 ${
+          isLocked ? "locked-button" : ""
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+      >
+        {isLocked ? "🔒 Upgrade to Unlock" : "Watch"}
+      </button>
+    </div>
+  );
+}
 // -----------------------------
 // PAGE
 // -----------------------------

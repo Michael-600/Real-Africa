@@ -6,7 +6,7 @@ import InterviewPage from './pages/Interviews'
 import TravelPage from './pages/travel'
 import AboutUsPage from './pages/about-us'
 import MainLayout from './components/Layout/MainLayout';
-
+import Categories from './pages/categories';
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
         <Route path="/interviews" element={<InterviewPage />} />
         <Route path="/travel" element={<TravelPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
+        <Route path="/categories" element={<Categories />} />
      
       </Routes>
       </MainLayout>
