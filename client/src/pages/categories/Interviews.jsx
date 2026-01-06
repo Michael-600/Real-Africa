@@ -1,5 +1,6 @@
+import React from 'react';
 import { useSearchParams } from "react-router-dom";
-import PageLayout from "../components/Layout/PageLayout";
+import PageLayout from "../../components/Layout/PageLayout";
 
 export default function Interviews() {
   const [searchParams, setSearchParams] = useSearchParams();

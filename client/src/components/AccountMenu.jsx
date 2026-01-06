@@ -1,13 +1,21 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
 
-export default function AccountMenu({ user, userTierLevel, tiers, onUpgrade }) {
+export default function AccountMenu({
+  user,
+  userTierLevel = null,
+  tiers = [],
+  onUpgrade,
+}) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar || null);
   const fileInputRef = useRef(null);
 
-  const currentTier = tiers.find(t => t.level === userTierLevel);
+  const currentTier =
+    Array.isArray(tiers) && userTierLevel != null
+      ? tiers.find(t => t.level === userTierLevel)
+      : null;
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -77,6 +85,8 @@ export default function AccountMenu({ user, userTierLevel, tiers, onUpgrade }) {
             <button
               className="account-upgrade"
               onClick={() => {
+                if (!Array.isArray(tiers) || userTierLevel == null || !onUpgrade) return;
+
                 const nextTier = tiers.find(t => t.level === userTierLevel + 1);
                 if (nextTier) {
                   onUpgrade(nextTier);

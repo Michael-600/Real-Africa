@@ -3,15 +3,22 @@ import { useState } from "react";
 import Navbar from "../navbar";
 import Footer from "../footer";
 import GetFeatured from "../get-featured";
+import ScrollToTop from '../ScrollToTop';
 
-export default function MainLayout({ children }) {
+
+const MainLayout = ({ children }) => {
   const [featuredOpen, setFeaturedOpen] = useState(false);
 
   return (
     <>
+      {/* Forces scroll reset on every route change */}
+     
+      <ScrollToTop />
       <Navbar onGetFeatured={() => setFeaturedOpen(true)} />
 
-      {children}
+      <main className="app-content">
+        {children}
+      </main>
 
       <Footer />
 
@@ -20,4 +27,6 @@ export default function MainLayout({ children }) {
       )}
     </>
   );
-}
+};
+
+export default MainLayout;
