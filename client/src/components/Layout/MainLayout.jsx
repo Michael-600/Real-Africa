@@ -20,8 +20,6 @@ const MainLayout = ({ children }) => {
         {children}
       </main>
 
-      <Footer />
-
       {featuredOpen && (
         <GetFeatured onClose={() => setFeaturedOpen(false)} />
       )}

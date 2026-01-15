@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AccountMenu from "../../components/AccountMenu";
 import Opportunities from "./opportunities";
+
 // -----------------------------
 // TECHNOLOGY SUBSCRIPTION MODEL
 // -----------------------------
@@ -32,6 +33,8 @@ const upcomingWebinars = [
     },
   },
 ];
+
+
 
 // -----------------------------
 // TECHNOLOGY TRACKS
@@ -132,7 +135,7 @@ export default function TechnologyPage() {
             </button>
           </div>
         </div>
-
+        
         {/* HERO */}
         <section className="get-mentored-hero">
           <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
@@ -187,7 +190,7 @@ export default function TechnologyPage() {
             ))}
           </div>
         </section>
-
+        
         {/* TECHNOLOGY STACKS */}
         <section className="tech-stacks-section mt-12">
           <h2 className="text-2xl font-semibold mb-6">Technology Stacks</h2>

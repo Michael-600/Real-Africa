@@ -277,6 +277,7 @@ const Navbar = ({ onGetFeatured }) => {
             <Link to="/">Home</Link>
             <Link to="/about-us">About Us</Link>
             <Link to="/travel">Travel</Link>
+            
             <button
               className="navbar__cta"
               style={{
@@ -291,11 +292,11 @@ const Navbar = ({ onGetFeatured }) => {
             >
               Get Featured
             </button>
-
+            <Link to="/technology">Tech</Link>
           </div>
-
+          
           <Link to="/get-mentored" className="navbar__cta">Get Mentored</Link>
-
+      
           <button
             className="menu-btn"
             onClick={() => setOpen(!open)}
@@ -317,6 +318,7 @@ const Navbar = ({ onGetFeatured }) => {
         <Link onClick={() => setOpen(false)} to="/">Home</Link>
         <Link onClick={() => setOpen(false)} to="/blog">Blog</Link>
         <Link onClick={() => setOpen(false)} to="/about-us">About Us</Link>
+        <Link onClick={() => setOpen(false)} to="/technology">Tech</Link>
         <button
           onClick={() => {
             setOpen(false);

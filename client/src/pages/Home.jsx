@@ -58,6 +58,7 @@ function Home() {
       <MeetTheTeam />
       <Testimonials />
       <Member />
+      <Footer />
     </div>
   );
 }

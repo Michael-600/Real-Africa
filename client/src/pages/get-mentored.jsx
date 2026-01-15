@@ -1,6 +1,10 @@
  
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from '../lib/supabase'
 import AccountMenu from "../components/AccountMenu";
+import { signUp } from '../lib/auth'
+import { signIn } from '../lib/auth'
+
 
 /**
  * MOCK ACCESS LEVEL
@@ -9,7 +13,7 @@ import AccountMenu from "../components/AccountMenu";
  * ...
  * 7 = 11+ figure
  */
-const userTierLevel = 3; // mock: user has access up to 7‑Figure mentors
+// userTierLevel is now stored in state (see component below)
 
 // -----------------------------
 // MOCK DATA
@@ -264,15 +268,23 @@ function CourseCard({
     </div>
   );
 }
+
+
 // -----------------------------
 // PAGE
 // -----------------------------
 export default function GetMentoredPage() {
+  // User state - replace hardcoded value
+  const [currentUser, setCurrentUser] = useState(null)
+  const [userTierLevel, setUserTierLevel] = useState(1) // Default to tier 1
+  
   const hasCallAccess = nextLiveCall.tierRequired <= userTierLevel;
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
   const [showTierDropdown, setShowTierDropdown] = useState(false);
   const [showCourses, setShowCourses] = useState(true);
+  // Track which tiers are expanded (for preview)
+  const [expandedTiers, setExpandedTiers] = useState(new Set([userTierLevel]));
 
   // Upgrade prompt state
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
@@ -298,6 +310,78 @@ export default function GetMentoredPage() {
 
   // Mentor Request Modal state
   const [showMentorRequest, setShowMentorRequest] = useState(false);
+
+  // Test Supabase connection
+  useEffect(() => {
+    async function testConnection() {
+      const { data, error } = await supabase.from('users').select('*').limit(1)
+      if (error) {
+        console.error('Supabase error:', error)
+      } else {
+        console.log('✅ Database connected! Users:', data)
+      }
+    }
+    testConnection()
+  }, [])
+
+    // Check if user is logged in and fetch their tier
+  useEffect(() => {
+    async function checkUser() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        console.log('✅ User is logged in:', user.email)
+        setCurrentUser(user)
+        
+        // Fetch user's tier from database
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('tier_level')
+          .eq('email', user.email)
+          .single()
+        
+        if (error) {
+          console.error('Error fetching user tier:', error)
+          // If user doesn't exist in users table, create them
+          const { data: newUser } = await supabase
+            .from('users')
+            .insert([{ email: user.email, name: user.user_metadata?.name || 'User', tier_level: 1 }])
+            .select()
+            .single()
+          
+          if (newUser) {
+            setUserTierLevel(newUser.tier_level)
+            console.log('✅ Created user in database with tier:', newUser.tier_level)
+          }
+        } else if (userData) {
+          setUserTierLevel(userData.tier_level)
+          console.log('✅ User tier loaded from database:', userData.tier_level)
+        }
+      } else {
+        console.log('No user logged in')
+        setCurrentUser(null)
+        setUserTierLevel(1) // Reset to default
+      }
+    }
+    checkUser()
+  }, [])
+
+  // Function to create a new user
+  async function createUser(email, name, tierLevel = 1) {
+    const { data, error } = await supabase
+      .from('users')
+      .insert([
+        { email, name, tier_level: tierLevel }
+      ])
+      .select()
+    
+    if (error) {
+      console.error('Error creating user:', error)
+      return null
+    } else {
+      console.log('✅ User created:', data)
+      return data[0]
+    }
+  }
 
   const effectiveTierLevel = previewTierLevel;
 
@@ -372,6 +456,50 @@ export default function GetMentoredPage() {
             Join live mentorship calls with experienced entrepreneurs at different
             stages of scale. No noise. No courses. Just real conversations.
           </p>
+          {/* Test button - remove this later 
+          <button
+            className="primary mt-4"
+            onClick={() => {
+              const randomId = Math.random().toString(36).substring(7)
+              createUser(`test-${randomId}@example.com`, `Test User ${randomId}`, 3)
+            }}
+          >
+            Test: Create User
+          </button>*/}
+                    {/* Test auth button - remove this later
+                    <button
+            className="primary mt-4"
+            onClick={async () => {
+              const randomId = Math.random().toString(36).substring(7)
+              const result = await signUp(
+                `test-${randomId}@gmail.com`,
+                'password123',
+                `Test User ${randomId}`
+              )
+              if (result.error) {
+                console.error('Sign up failed:', result.error)
+              } else {
+                console.log('✅ User signed up!', result.data)
+              }
+            }}
+          >
+            Test: Sign Up
+          </button>*/}
+                    {/* Test sign in button - remove this later
+                    <button
+            className="primary mt-4 ml-2"
+            onClick={async () => {
+              // Use an email from a user you already created
+              const result = await signIn('test-h6wat@gmail.com', 'password123')
+              if (result.error) {
+                console.error('Sign in failed:', result.error)
+              } else {
+                console.log('✅ User signed in!', result.data.user.email)
+              }
+            }}
+          >
+            Test: Sign In
+          </button> */}
         </section>
 
         {/* TIER DROPDOWN (STICKY) */}
@@ -504,13 +632,28 @@ export default function GetMentoredPage() {
                     <div
                       className={`courses-card clickable ${isLocked ? "locked" : ""}`}
                       onClick={() => {
+                        // Toggle expansion for locked tiers to show preview
                         if (isLocked) {
-                          setSelectedUpgradeTier(tier);
-                          setShowUpgradePrompt(true);
+                          const newExpanded = new Set(expandedTiers);
+                          if (newExpanded.has(tier.level)) {
+                            newExpanded.delete(tier.level);
+                          } else {
+                            newExpanded.add(tier.level);
+                          }
+                          setExpandedTiers(newExpanded);
                           return;
                         }
+                        // For unlocked tiers, set as active tier
                         setPreviewTierLevel(tier.level);
                         setShowCourses(true);
+                        // Also track expansion
+                        const newExpanded = new Set(expandedTiers);
+                        if (newExpanded.has(tier.level)) {
+                          newExpanded.delete(tier.level);
+                        } else {
+                          newExpanded.add(tier.level);
+                        }
+                        setExpandedTiers(newExpanded);
                       }}
                     >
                       <div>
@@ -524,76 +667,89 @@ export default function GetMentoredPage() {
                         </p>
                       </div>
 
-                      {!hasAccess ? (
-                        <span className="lock-indicator">🔒</span>
-                      ) : (
-                        <span className="caret">
-                          {showCourses && tier.level === effectiveTierLevel ? "▴" : "▾"}
-                        </span>
-                      )}
+                      <span className="caret">
+                        {expandedTiers.has(tier.level) ? "▴" : "▾"}
+                      </span>
                     </div>
-                    {showCourses && tier.level === effectiveTierLevel && (
+                    {/* Show lessons for current tier or preview for locked tiers when expanded */}
+                    {expandedTiers.has(tier.level) && (
                       <div className="space-y-2 mt-4">
-                        <div className="progress-bar">
-                          <p className="text-sm text-zinc-600">
-                            You watched {lessonsWatched}/{totalLessonsThisWeek} lessons this week
-                          </p>
-                          <div className="progress-track">
-                            <div
-                              className="progress-fill"
-                              style={{ width: `${(lessonsWatched / totalLessonsThisWeek) * 100}%` }}
-                            />
-                          </div>
-                        </div>
-                        <p className="text-zinc-600">
-                          Curated YouTube lessons structured into a clear learning path.
-                        </p>
+                        {/* Only show progress bar for current tier */}
+                        {tier.level === effectiveTierLevel && (
+                          <>
+                            <div className="progress-bar">
+                              <p className="text-sm text-zinc-600">
+                                You watched {lessonsWatched}/{totalLessonsThisWeek} lessons this week
+                              </p>
+                              <div className="progress-track">
+                                <div
+                                  className="progress-fill"
+                                  style={{ width: `${(lessonsWatched / totalLessonsThisWeek) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                            <p className="text-zinc-600">
+                              Curated YouTube lessons structured into a clear learning path.
+                            </p>
+                          </>
+                        )}
 
-                        <div className="class-modules scrollable">
+                        <div className={`class-modules scrollable ${isLocked ? "locked-tier-preview" : ""}`}>
                           <div className="progress-rail">
-                          {curriculum.map((module, idx) => {
-                            const isLocked =
-                              module.module.includes("Scale") &&
-                              effectiveTierLevel < 4 &&
-                              !unlockedBonusModules;
+                          {/* Use tier's own curriculum for preview */}
+                          {getTierPreview(tier.level).map((module, idx) => {
+                            // For locked tiers, all modules are locked
+                            const moduleIsLocked = isLocked;
 
                             return (
                               <div
                                 key={idx}
-                                className={`class-module ${isLocked ? "locked has-tooltip" : ""}`}
-                                data-tooltip={isLocked ? "Upgrade to unlock this module" : undefined}
+                                className={`class-module ${moduleIsLocked ? "locked has-tooltip" : ""} ${isLocked ? "locked-preview" : ""}`}
+                                data-tooltip={moduleIsLocked ? "Upgrade to unlock this module" : undefined}
                                 onClick={() => {
-                                  if (isLocked) {
-                                    setSelectedUpgradeTier(
-                                      tiers.find(t => t.level > userTierLevel)
-                                    );
+                                  if (moduleIsLocked) {
+                                    setSelectedUpgradeTier(tier);
                                     setShowUpgradePrompt(true);
                                   }
+                                }}
+                                style={{
+                                  opacity: moduleIsLocked ? 0.85 : 1,
+                                  cursor: moduleIsLocked ? "pointer" : "default",
                                 }}
                               >
                                 <h3 className="text-lg font-medium">{module.module}</h3>
                                 <p className="text-sm text-zinc-500">{module.description}</p>
                                 <p className="text-xs text-zinc-500 mt-1">
-                                  {Object.keys(completedLessons).filter(k => k.startsWith(module.module)).length}
-                                  /{module.videos.length} lessons completed
+                                  {isLocked 
+                                    ? `0/${module.videos.length} lessons completed`
+                                    : `${Object.keys(completedLessons).filter(k => k.startsWith(module.module)).length}/${module.videos.length} lessons completed`}
                                 </p>
 
                                 <ul className="video-list">
                                   {module.videos.map((video, vIdx) => {
                                     const lessonKey = `${module.module}-${vIdx}`;
-                                    const isDone = completedLessons[lessonKey];
-                                    const isCurrent = lessonKey === currentLessonKey;
+                                    const isDone = !isLocked && completedLessons[lessonKey];
+                                    const isCurrent = !isLocked && lessonKey === currentLessonKey;
                                     return (
                                       <li
                                         key={vIdx}
-                                        className={`video-item clickable ${isDone ? "done" : ""} ${isCurrent ? "current" : ""}`}
+                                        className={`video-item clickable ${isDone ? "done" : ""} ${isCurrent ? "current" : ""} ${isLocked ? "locked-video" : ""}`}
                                         onClick={() => {
+                                          if (isLocked) {
+                                            setSelectedUpgradeTier(tier);
+                                            setShowUpgradePrompt(true);
+                                            return;
+                                          }
                                           if (!hasAccess) {
                                             setSelectedUpgradeTier(tier);
                                             setShowUpgradePrompt(true);
                                             return;
                                           }
                                           setActiveLesson({ ...video, key: lessonKey });
+                                        }}
+                                        style={{
+                                          opacity: isLocked ? 0.85 : 1,
+                                          cursor: isLocked ? "pointer" : "pointer",
                                         }}
                                       >
                                         <span>
@@ -602,11 +758,11 @@ export default function GetMentoredPage() {
                                           {isCurrent && <span className="current-indicator"> ← you are here</span>}
                                         </span>
                                         <button
-                                          className={`watch-link ${!hasAccess ? "disabled" : ""}`}
-                                          disabled={!hasAccess}
+                                          className={`watch-link ${isLocked || !hasAccess ? "disabled locked-button" : ""}`}
+                                          disabled={isLocked || !hasAccess}
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            if (!hasAccess) {
+                                            if (isLocked || !hasAccess) {
                                               setSelectedUpgradeTier(tier);
                                               setShowUpgradePrompt(true);
                                               return;
@@ -614,16 +770,16 @@ export default function GetMentoredPage() {
                                             setActiveLesson({ ...video, key: lessonKey });
                                           }}
                                         >
-                                          {hasAccess ? "Watch" : "Locked"}
+                                          {isLocked ? "🔒 Locked" : hasAccess ? "Watch" : "Locked"}
                                         </button>
                                       </li>
                                     );
                                   })}
                                 </ul>
 
-                                {isLocked && (
+                                {moduleIsLocked && (
                                   <p className="text-xs text-zinc-500 mt-2">
-                                    🔒 Unlock via higher tier or invite a friend
+                                    🔒 Upgrade to unlock this module
                                   </p>
                                 )}
                               </div>

@@ -10,7 +10,7 @@ const Categories = () => {
   const [notifySent, setNotifySent] = useState(false);
 
   const goToCategory = (slug) => {
-    navigate(`/category/${slug}`);
+    navigate(`/${slug}`);
   };
   return (
     <div className="categories-page">
