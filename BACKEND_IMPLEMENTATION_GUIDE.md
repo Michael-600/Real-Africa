@@ -394,8 +394,29 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 
 ---
 
-Would you like me to:
-1. Create a Supabase schema file?
-2. Set up the Supabase client integration?
-3. Create API service files for your frontend?
-4. Set up a Node.js/Express backend structure?
+TO DO:
+
+Next steps for your backend:
+Option 1: Complete the authentication flow
+Create a login/signup page (replace test buttons)
+Add sign out functionality
+Handle authentication state across the app
+Protect routes (redirect if not logged in)
+
+Option 2: Create more database tables
+courses table (course modules)
+modules table (course modules)
+videos table (individual lessons)
+lesson_progress table (track completed lessons)
+referrals table (track referral system)
+
+Option 3: Replace mock data with real database queries
+Load courses from the database
+Track lesson progress in the database
+Load referrals from the database
+Replace hardcoded curriculum with database data
+
+Option 4: Set up payment/subscription system
+Create subscription records when users upgrade
+Integrate M-Pesa API (or Stripe for testing)
+Handle subscription status and expiration

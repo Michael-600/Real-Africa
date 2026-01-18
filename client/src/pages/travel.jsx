@@ -1,5 +1,11 @@
 import React from 'react'
 import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 import Footer from "../components/footer";
 import CustomTripModal from "../components/CustomTripModal";
 
@@ -17,6 +23,41 @@ export default function Travel() {
     name: "",
     email: "",
   });
+
+  const handleCustomTripSubmit = async (formData) => {
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error("User not authenticated");
+      }
+
+      const { error } = await supabase
+    .from("custom_trip_requests") // ✅ CORRECT TABLE
+    .insert([
+      {
+        user_id: user?.id ?? null,
+        trip_type: formData.tripType,
+        destination: formData.destination,
+        dates: formData.dates,
+        group_size: formData.groupSize,
+        budget: formData.budget,
+        vision: formData.vision,
+        name: formData.name,
+        email: formData.email,
+      },
+    ]);
+
+      if (error) throw error;
+    } catch (err) {
+      console.error("Custom trip submission failed:", err);
+      throw err;
+    }
+  };
+
   return (
     <>
       {/* Hero */}
@@ -164,7 +205,10 @@ export default function Travel() {
       <div className="section-divider" />
 
     {customTripOpen && (
-      <CustomTripModal onClose={() => setCustomTripOpen(false)} />
+      <CustomTripModal
+        onClose={() => setCustomTripOpen(false)}
+        onSubmit={handleCustomTripSubmit}
+      />
     )}
 
     {plannerOpen && (
@@ -341,7 +385,38 @@ export default function Travel() {
             {plannerStep === 4 && (
               <button
                 className="waitlist-submit"
-                onClick={() => setPlannerStep(5)}
+                onClick={async () => {
+                  try {
+                    const {
+                      data: { user },
+                      error: userError,
+                    } = await supabase.auth.getUser();
+
+                    if (userError || !user) {
+                      alert("Please log in to submit your trip request.");
+                      return;
+                    }
+
+                    await supabase.from("trip_requests").insert([
+                      {
+                        user_id: user.id,
+                        trip_type: plannerData.tripType,
+                        destination: plannerData.destination,
+                        dates: plannerData.dates,
+                        group_size: plannerData.groupSize,
+                        budget: plannerData.budget,
+                        vision: plannerData.vision,
+                        name: plannerData.name,
+                        email: plannerData.email,
+                      },
+                    ]);
+
+                    setPlannerStep(5);
+                  } catch (err) {
+                    alert("Something went wrong. Please try again.");
+                    console.error(err);
+                  }
+                }}
               >
                 Design My Trip
               </button>
@@ -353,6 +428,16 @@ export default function Travel() {
                 onClick={() => {
                   setPlannerOpen(false);
                   setPlannerStep(1);
+                  setPlannerData({
+                    tripType: "",
+                    destination: "",
+                    dates: "",
+                    groupSize: "",
+                    budget: "",
+                    vision: "",
+                    name: "",
+                    email: "",
+                  });
                 }}
               >
                 Close
