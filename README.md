@@ -1,2 +1,28 @@
 # Real-Africa
-This project involves building a website for Real-Africa Linkedln page
+
+---
+
+## ⚙️ Tech Stack
+
+### Frontend
+- **React + Vite**
+
+### Styling
+- **Inline CSS**
+- **Tailwind CSS**
+- **Styled-Components**
+
+### Build Tool
+- **Vite**
+
+### Language
+- **JavaScript (ES6+)**
+
+---
+
+
+
+
+
+
+
