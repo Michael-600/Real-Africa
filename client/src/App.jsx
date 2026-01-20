@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import GetMentoredPage from './pages/get-mentored';
 import InterviewPage from './pages/categories/Interviews'
@@ -10,25 +10,68 @@ import Categories from './pages/categories/opportunities';
 import FeaturedCEOs from './pages/categories/features-ceos';
 import InterviewSelect from './pages/interviews-select';
 import Technology from './pages/categories/technology';
-
+import { useAuth } from "./lib/authContext";
+import Auth from "./pages/Auth";
+import { AuthProvider } from "./lib/authContext"
+import Communities from './pages/communities'
+import CommunityPage from './pages/CommunityPage';
 
 function App() {
+  const ProtectedRoute = ({ children }) => {
+    const { user, loading } = useAuth();
+  
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <p className="text-zinc-500">Loading…</p>
+        </div>
+      );
+    }
+  
+    return user ? children : <Navigate to="/auth" />;
+  };
+
   return (
+    <AuthProvider>
     <BrowserRouter>
       <MainLayout>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/get-mentored" element={<GetMentoredPage />} />
-          <Route path="/interviews" element={<InterviewPage />} />
-          <Route path="/travel" element={<TravelPage />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route
+            path="/"
+            element={
+              <Home />
+            }
+          />
+          <Route path="/travel" element={             
+              <TravelPage />}/>
+
           <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/get-mentored" element={
+            <ProtectedRoute>
+            <GetMentoredPage />
+            </ProtectedRoute>} />
+          <Route path="/interviews" element={<InterviewPage />} />
+          <Route path="/communities" element={<Communities />} />
           <Route path="/opportunities" element={<Categories />} />
           <Route path="/featured-ceos" element={<FeaturedCEOs />} />
-          <Route path="/technology" element={<Technology />} />
+          <Route path="/technology" element={
+            <ProtectedRoute>
+            <Technology /> 
+            </ProtectedRoute> } />
+            <Route
+          path="/communities/:slug"
+          element={
+            <ProtectedRoute>
+              <CommunityPage />
+            </ProtectedRoute>
+          }
+        />        
           <Route path="/interviews/:id" element={<InterviewSelect />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
+    </AuthProvider>
   );
 }
 

@@ -1,10 +1,9 @@
  
 import React, { useState, useEffect } from "react";
 import { supabase } from '../lib/supabase'
+import { useAuth } from "../lib/authContext";
 import AccountMenu from "../components/AccountMenu";
 import NextLiveCallCard from "../components/NextLiveCallCard";
-import { signUp } from '../lib/auth'
-import { signIn } from '../lib/auth'
 
 
 /**
@@ -163,58 +162,7 @@ const tierCurricula = {
   ],
 };
 
-function ProgramCard({
-  title,
-  description,
-  imageSrc,
-  isLocked,
-  progressPercent,
-  expanded,
-  onToggle,
-  children,
-}) {
-  return (
-    <div
-      className={`program-card ${isLocked ? "locked-preview" : ""}`}
-      style={{ opacity: isLocked ? 0.85 : 1 }}
-    >
-      <img src={imageSrc} alt={title} className="program-card-image" />
 
-      <div className="program-card-body">
-        <h2 className="text-2xl font-semibold">{title}</h2>
-        <p className="text-sm text-zinc-500">{description}</p>
-
-        <div className="progress-bar mt-3">
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${isLocked ? 0 : progressPercent}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-zinc-500 mt-1">
-            <span>{isLocked ? "0%" : `${progressPercent}%`}</span>
-          </div>
-        </div>
-
-        <button
-          className={`watch-link mt-4 ${isLocked ? "locked-button" : ""}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggle();
-          }}
-        >
-          {isLocked ? "🔒 Upgrade to Unlock" : expanded ? "Hide Modules" : "Open Program"}
-        </button>
-
-        {!isLocked && expanded && (
-          <div className="mt-4 space-y-3">
-            {children}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 function CourseCard({
   module,
   completedLessons,
@@ -275,158 +223,112 @@ function CourseCard({
 // PAGE
 // -----------------------------
 export default function GetMentoredPage() {
-  // User state - replace hardcoded value
-  const [currentUser, setCurrentUser] = useState(null)
-  const [userTierLevel, setUserTierLevel] = useState(1) // Default to tier 1
-  
-  const hasCallAccess = nextLiveCall.tierRequired <= userTierLevel;
+  // -----------------------------
+  // ALL HOOKS FIRST
+  // -----------------------------
+  const { profile, loading } = useAuth();
+
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
   const [showTierDropdown, setShowTierDropdown] = useState(false);
   const [showCourses, setShowCourses] = useState(true);
-  // Track which tiers are expanded (for preview)
-  const [expandedTiers, setExpandedTiers] = useState(new Set([userTierLevel]));
+  const [expandedTiers, setExpandedTiers] = useState(new Set());
 
-  // Upgrade prompt state
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [selectedUpgradeTier, setSelectedUpgradeTier] = useState(null);
 
-  // Tier preview (allows users to preview higher tiers)
-  const [previewTierLevel, setPreviewTierLevel] = useState(userTierLevel);
+  const [previewTierLevel, setPreviewTierLevel] = useState(null);
 
-  // Lesson modal
   const [activeLesson, setActiveLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState({});
 
-  // Progress + referrals (mock)
   const [lessonsWatched, setLessonsWatched] = useState(2);
   const totalLessonsThisWeek = 5;
 
-  const [referrals, setReferrals] = useState(1); // mock referrals
-  const unlockedBonusModules = referrals >= 1;
-  const hasFreeMonth = referrals >= 3;
+  const [referrals, setReferrals] = useState(1);
 
-  // LIVE CALL REMINDER MODAL state
   const [showCallReminder, setShowCallReminder] = useState(false);
-
-  // Mentor Request Modal state
   const [showMentorRequest, setShowMentorRequest] = useState(false);
 
-  const [courses, setCourses] = useState([])
-  const [coursesLoading, setCoursesLoading] = useState(true)
-  const [coursesError, setCoursesError] = useState(null)
+  const [courses, setCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [coursesError, setCoursesError] = useState(null);
+  
   useEffect(() => {
+    let cancelled = false;
+  
     async function loadCourses() {
-      const { data, error } = await supabase
-        .from('courses')
-        .select(`
-          id,
-          title,
-          description,
-          tier_level,
-          modules (
+      try {
+        setCoursesLoading(true);
+  
+        const { data, error } = await supabase
+          .from("courses")
+          .select(`
             id,
             title,
             description,
-            order_index,
-            videos (
+            tier_level,
+            modules (
               id,
               title,
-              youtube_url,
-              order_index
+              description,
+              videos (
+                id,
+                title,
+                youtube_url
+              )
             )
-          )
-        `)
-        .order('tier_level')
-        .order('order_index', { foreignTable: 'modules' })
-        .order('order_index', { foreignTable: 'modules.videos' })
-
-      if (error) {
-        console.error('Error loading courses:', error)
-        setCoursesError(error)
-      } else {
-        setCourses(data || [])
-      }
-
-      setCoursesLoading(false)
-    }
-
-    loadCourses()
-  }, [])
+          `);
   
-  // Test Supabase connection
-  useEffect(() => {
-    async function testConnection() {
-      const { data, error } = await supabase.from('users').select('*').limit(1)
-      if (error) {
-        console.error('Supabase error:', error)
-      } else {
-        console.log('✅ Database connected! Users:', data)
+        if (error) throw error;
+        if (!cancelled) setCourses(data || []);
+      } catch (err) {
+        console.error("Failed to load courses:", err);
+        if (!cancelled) setCoursesError(err);
+      } finally {
+        if (!cancelled) setCoursesLoading(false);
       }
     }
-    testConnection()
-  }, [])
+  
+    loadCourses();
+    return () => { cancelled = true };
+  }, []);
+  
 
-    // Check if user is logged in and fetch their tier
-  useEffect(() => {
-    async function checkUser() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        console.log('✅ User is logged in:', user.email)
-        setCurrentUser(user)
-        
-        // Fetch user's tier from database
-        const { data: userData, error } = await supabase
-          .from('users')
-          .select('tier_level')
-          .eq('email', user.email)
-          .single()
-        
-        if (error) {
-          console.error('Error fetching user tier:', error)
-          // If user doesn't exist in users table, create them
-          const { data: newUser } = await supabase
-            .from('users')
-            .insert([{ email: user.email, name: user.user_metadata?.name || 'User', tier_level: 1 }])
-            .select()
-            .single()
-          
-          if (newUser) {
-            setUserTierLevel(newUser.tier_level)
-            console.log('✅ Created user in database with tier:', newUser.tier_level)
-          }
-        } else if (userData) {
-          setUserTierLevel(userData.tier_level)
-          console.log('✅ User tier loaded from database:', userData.tier_level)
-        }
-      } else {
-        console.log('No user logged in')
-        setCurrentUser(null)
-        setUserTierLevel(1) // Reset to default
-      }
-    }
-    checkUser()
-  }, [])
+  console.log("RENDER", {
+    loading,
+    profileExists: !!profile,
+    coursesLoading,
+    tier: profile?.tier_level,
+  });
 
-  // Function to create a new user
-  async function createUser(email, name, tierLevel = 1) {
-    const { data, error } = await supabase
-      .from('users')
-      .insert([
-        { email, name, tier_level: tierLevel }
-      ])
-      .select()
-    
-    if (error) {
-      console.error('Error creating user:', error)
-      return null
-    } else {
-      console.log('✅ User created:', data)
-      return data[0]
-    }
+  console.log("GUARD CHECK", {
+    loading,
+    profile,
+    coursesLoading,
+  });
+
+  if (loading && !authResolvedOnce) {
+    return <div>Loading session…</div>;
+  }
+  
+  if (!profile) {
+    return (
+      <div className="p-8 text-red-500">
+        Profile not loaded. Please refresh or re-login.
+      </div>
+    );
   }
 
-  const effectiveTierLevel = previewTierLevel;
+  if (coursesLoading) {
+    return <div className="p-8 text-zinc-500">Loading courses…</div>;
+  }
+
+  const effectiveTierLevel =
+    previewTierLevel ?? profile.tier_level;
+
+  const hasCallAccess =
+    nextLiveCall.tierRequired <= profile.tier_level;
 
   // Helper to get courses for a tier from database
   const getCoursesForTier = (tierLevel) =>
@@ -445,18 +347,13 @@ export default function GetMentoredPage() {
   // For now, there are no lessons/videos in db courses (Phase 1)
   const allLessonKeys = [];
   const currentLessonKey = undefined;
-
-  if (coursesLoading) {
-    return <div className="p-8 text-zinc-500">Loading courses…</div>
-  }
-
+  const hasFreeMonth = referrals >= 3;
+  
   return (
     <div className="get-mentored-page">
       {/* GLOBAL ACCOUNT MENU (FIXED TOP RIGHT) */}
       <div className="account-menu-fixed">
         <AccountMenu
-          user={{ name: "Raydon Muregi", initials: "RM" }}
-          userTierLevel={userTierLevel}
           tiers={tiers}
           onUpgrade={(tier) => {
             setSelectedUpgradeTier(tier);
@@ -495,7 +392,7 @@ export default function GetMentoredPage() {
             <span className="tier-pill">
               Your Mentor Tier:{" "}
               <strong>
-                {tiers.find(t => t.level === userTierLevel)?.name}
+                {tiers.find(t => t.level === profile.tier_level)?.name}
               </strong>
             </span>
           </div>
@@ -568,7 +465,7 @@ export default function GetMentoredPage() {
             <div className="tier-dropdown-menu">
               {tiers.map(tier => {
                 const isActive = tier.level === effectiveTierLevel;
-                const isLocked = tier.level > userTierLevel;
+                const isLocked = tier.level > profile.tier_level;
 
                 return (
                   <div
@@ -613,13 +510,13 @@ export default function GetMentoredPage() {
           {/* Current tier access indicator */}
           <p className="text-sm text-zinc-500">
             You currently have access up to{" "}
-            <strong>{tiers.find(t => t.level === userTierLevel)?.name}</strong>
+            <strong>{tiers.find(t => t.level === profile.tier_level)?.name}</strong>
           </p>
           <div className="space-y-4">
             {tiers.map(tier => {
                 const isCurrentTier = tier.level === effectiveTierLevel;
-                const isLocked = tier.level > userTierLevel;
-                const hasAccess = tier.level <= userTierLevel;
+                const isLocked = tier.level > profile.tier_level;
+                const hasAccess = tier.level <= profile.tier_level;
 
                 return (
                   <div key={tier.level}>
@@ -870,7 +767,7 @@ export default function GetMentoredPage() {
               onClick={() => {
                 setCompletedLessons(prev => ({
                   ...prev,
-                  [activeLesson.key]: true,
+                  [activeLesson.id]: true,
                 }));
                 setLessonsWatched(l => Math.min(l + 1, totalLessonsThisWeek));
                 setActiveLesson(null);
