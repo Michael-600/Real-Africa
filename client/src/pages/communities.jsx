@@ -30,7 +30,7 @@ export default function Communities() {
       },
     ];
     const navigate = useNavigate();
-  
+    const [joiningId, setJoiningId] = React.useState(null);
     return (
       <div className="discover-page">
         {/* Top Nav */}
@@ -80,7 +80,13 @@ export default function Communities() {
         {/* Grid */}
         <section className="grid-wrap">
           <div className="community-grid">
-            {communities.map((community, index) => (
+            {communities.map((community, index) => {
+              const joined =
+                JSON.parse(localStorage.getItem("joined_communities") || "[]");
+
+              const isJoined = joined.includes(community.id);
+
+              return (
               <div
                 key={community.id}
                 className="community-card"
@@ -105,20 +111,36 @@ export default function Communities() {
                     A community built to learn, discuss, and grow
                     together with like-minded people.
                   </p>
-                  {community.slug && (
+                  {community.slug && !isJoined && (
                     <button
                       className="join-community-btn"
+                      disabled={joiningId === community.id}
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log("JOIN CLICKED", community.id);
-                        localStorage.setItem(
-                          "joined_communities",
-                          JSON.stringify(["entrepreneurship"])
-                        );
+
+                        setJoiningId(community.id);
+
+                        const joined =
+                          JSON.parse(localStorage.getItem("joined_communities") || "[]");
+
+                        if (!joined.includes(community.id)) {
+                          joined.push(community.id);
+                          localStorage.setItem(
+                            "joined_communities",
+                            JSON.stringify(joined)
+                          );
+                        }
+
+                        setTimeout(() => {
+                          setJoiningId(null);
+                        }, 600);
                       }}
                     >
-                      Join community
+                      {joiningId === community.id ? "Joining…" : "Join community"}
                     </button>
+                  )}
+                  {isJoined && (
+                    <span className="joined-badge">✓ Joined</span>
                   )}
                   <div className="card-meta">
                     <span>{community.members} Members</span>
@@ -127,7 +149,7 @@ export default function Communities() {
                   </div>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         </section>
 
