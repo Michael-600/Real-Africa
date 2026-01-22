@@ -110,11 +110,11 @@ export default function Communities() {
                       className="join-community-btn"
                       onClick={(e) => {
                         e.stopPropagation();
+                        console.log("JOIN CLICKED", community.id);
                         localStorage.setItem(
-                          "mock_joined_community",
-                          community.id
+                          "joined_communities",
+                          JSON.stringify(["entrepreneurship"])
                         );
-                        navigate(`/communities/${community.slug}`);
                       }}
                     >
                       Join community

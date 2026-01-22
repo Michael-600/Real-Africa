@@ -16,12 +16,12 @@ import { AuthProvider } from "./lib/authContext"
 import Communities from './pages/communities'
 import CommunityPage from './pages/CommunityPage';
 import AdminPage from "../Admin/AdminPage";
-
+import UsersAdmin from "../Admin/UsersAdmin";
 
 function App() {
   const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
-  
+
     if (loading) {
       return (
         <div className="flex items-center justify-center min-h-screen">
@@ -29,11 +29,11 @@ function App() {
         </div>
       );
     }
-  
+
     if (!user) {
       return <Navigate to="/auth" replace />;
     }
-  
+
     return children;
   };
 
@@ -103,7 +103,9 @@ function App() {
                 <AdminPage />
               </AdminRoute>
             }
-          />
+          >
+            <Route path="users" element={<UsersAdmin />} />
+          </Route>
         </Routes>
       </MainLayout>
     </BrowserRouter>

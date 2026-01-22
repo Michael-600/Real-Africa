@@ -1,6 +1,6 @@
  
 import React, { useState, useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from '../lib/supabase'
 import { useAuth } from "../lib/authContext";
 import AccountMenu from "../components/AccountMenu";
@@ -227,24 +227,8 @@ export default function GetMentoredPage() {
   // -----------------------------
   // ALL HOOKS FIRST
   // -----------------------------
-  const [hasMockCommunity, setHasMockCommunity] = React.useState(
-    localStorage.getItem("mock_joined_community") === "true"
-  );
-  
-  React.useEffect(() => {
-    const handleStorage = () => {
-      setHasMockCommunity(
-        localStorage.getItem("mock_joined_community") === "true"
-      );
-    };
-  
-    window.addEventListener("storage", handleStorage);
-    handleStorage(); // also re-check on mount
-  
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, []);
+  const navigate = useNavigate();
+  // Remove hasMockCommunity state and effect.
 
   const { profile, loading } = useAuth();
 
@@ -252,9 +236,13 @@ export default function GetMentoredPage() {
 
   // TEMPORARY community membership check
   // Replace this with real membership data when available
+  const joined = JSON.parse(
+    localStorage.getItem("joined_communities") || "[]"
+  );
+
   const isInCommunity =
-  hasMockCommunity ||
-  (profile?.communities && profile.communities.length > 0);
+    joined.length > 0 ||
+    (profile?.communities && profile.communities.length > 0);
 
   // Enforce: must be in a community before accessing mentorship
   if (!loading && profile && !isInCommunity) {
