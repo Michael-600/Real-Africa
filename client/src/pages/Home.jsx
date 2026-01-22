@@ -11,10 +11,31 @@ import Testimonials from "../components/testimonials";
 import Member from "../components/member";
 import Footer from "../components/footer"
 import Logo from "../../assets/logo.png";
+import NextLiveCallCard from "../components/NextLiveCallCard";
 
 function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
+  const [hasReservedSeat, setHasReservedSeat] = useState(false);
+  const [reservedSeatNumber, setReservedSeatNumber] = useState(null);
+
+  const nextLiveCall = {
+    title: "Building Systems That Scale",
+    datetime: "Jan 29, 2026 · 7:00 PM EAT",
+    tierRequired: 1,
+    speaker: {
+      name: "Raydon Muregi",
+      role: "6-Figure Kenyan Founder",
+      photo: "/assets/raydon.jpeg",
+      links: {}
+    }
+  };
+
+  const tiers = [
+    { level: 1, name: "5-Figure Entrepreneurs" },
+    { level: 2, name: "6-Figure Entrepreneurs" },
+    { level: 3, name: "7-Figure Entrepreneurs" },
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -48,6 +69,10 @@ function Home() {
     );
   }
 
+  const handleJoinCall = () => {
+    alert("The live call has not started yet.");
+  };
+
   return (
     <div className={`home-content ${!isLoading ? "visible" : ""}`}>
       <Hero />
@@ -57,7 +82,25 @@ function Home() {
       <SpecialPost />
       <MeetTheTeam />
       <Testimonials />
-      <Member />
+      <NextLiveCallCard
+        nextLiveCall={nextLiveCall}
+        tiers={tiers}
+        hasReservedSeat={hasReservedSeat}
+        canJoinCall={false}
+        onReserveSeat={() => {
+          document
+            .getElementById("seat-selector")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }}
+        onJoinCall={handleJoinCall}
+      />
+      <Member
+        hasReservedSeat={hasReservedSeat}
+        onSeatReserved={(seatNumber) => {
+          setHasReservedSeat(true);
+          setReservedSeatNumber(seatNumber);
+        }}
+      />
       <Footer />
     </div>
   );

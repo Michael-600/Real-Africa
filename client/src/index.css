@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
+
+
+/* Your existing CSS continues below */
 * {
   margin: 0;
   padding: 0;
@@ -4414,3 +4417,397 @@ body.loading {
       0 0 0 3px rgba(251, 191, 36, 0.45), /* amber focus ring */
       0 10px 25px rgba(0, 0, 0, 0.35);
   }
+
+  .auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f172a, #020617);
+  }
+  
+  .auth-card {
+    width: 100%;
+    max-width: 380px;
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  
+  .auth-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .auth-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 24px;
+  }
+  
+  .auth-input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+  }
+  
+  .auth-input:focus {
+    outline: none;
+    border-color: #0f172a;
+  }
+  
+  .auth-button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  
+  .auth-button.primary {
+    background: #0f172a;
+    color: white;
+    border: none;
+  }
+  
+  .auth-button.secondary {
+    background: transparent;
+    color: #0f172a;
+    border: 1px solid #0f172a;
+  }
+  
+  .auth-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+ /* =========================
+   DESIGN TOKENS
+   ========================= */
+
+:root {
+  --bg-page: #faf9f7;
+  --bg-white: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --border-light: #e5e7eb;
+  --pill-bg: #ffffff;
+  --pill-active: #8b8b8b;
+  --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.08);
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-pill: 9999px;
+  --max-width: 1200px;
+}
+
+/* =========================
+   BASE
+   ========================= */
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  background: var(--bg-page);
+  color: var(--text-main);
+}
+
+/* =========================
+   NAV
+   ========================= */
+
+.discover-nav {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.nav-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.login-btn {
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-white);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* =========================
+   HERO
+   ========================= */
+
+.discover-hero {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 64px 20px 40px;
+  text-align: center;
+}
+
+.discover-hero h1 {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.discover-hero p {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.discover-hero a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+/* =========================
+   SEARCH
+   ========================= */
+
+.search-wrapper {
+  margin: 32px auto 0;
+  position: relative;
+  max-width: 520px;
+}
+
+.search-wrapper input {
+  width: 100%;
+  padding: 16px 18px 16px 44px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  font-size: 16px;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.6;
+}
+
+/* =========================
+   CATEGORIES
+   ========================= */
+
+.categories {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 10px 20px 36px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.pill {
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-light);
+  background: var(--pill-bg);
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.pill.active {
+  background: var(--pill-active);
+  color: white;
+  border-color: var(--pill-active);
+}
+
+/* =========================
+   GRID
+   ========================= */
+
+.grid-wrap {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+/* =========================
+   CARD
+   ========================= */
+
+.community-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.community-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+
+.card-image {
+  height: 150px;
+  background: linear-gradient(135deg, #111827, #374151);
+  position: relative;
+}
+
+.rank {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.55);
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card-body h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card-body p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.card-meta {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--text-muted);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.card-meta strong {
+  color: var(--text-main);
+}
+
+
+
+.card-image {
+  height: 180px;          /* your header height */
+  overflow: hidden;
+  position: relative;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* THIS is the key */
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 1024px) {
+  .community-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .community-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .discover-hero h1 {
+    font-size: 32px;
+  }
+}
+
+/* Break out of MainLayout constraints */
+.mentorship-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1.5rem;
+  background: #fafafa;
+}
+
+/* Card */
+.mentorship-gate-card {
+  width: 100%;
+  max-width: 420px;
+
+  background: #ffffff;
+  text-align: center;
+
+  padding: 2rem 1.75rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Typography */
+.mentorship-gate-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.mentorship-gate-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #52525b;
+  margin-bottom: 1.5rem;
+}
+
+/* Button */
+.mentorship-gate-card button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .mentorship-gate-card h2 {
+    font-size: 1.75rem;
+  }
+}
+

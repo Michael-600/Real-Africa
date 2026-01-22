@@ -8,7 +8,7 @@ const useAuth = () => {
   };
 };
 
-const SeatSelector = () => {
+const SeatSelector = ({ onSeatReserved, hasReservedSeat }) => {
   const { user } = useAuth();
   const TOTAL_SEATS = 24;
   const BOOKED_SEATS = 8;
@@ -21,7 +21,7 @@ const SeatSelector = () => {
   }));
 
   return (
-    <div className="seat-selector">
+    <div className="seat-selector" id="seat-selector">
       <p className="seat-selector__meta">
         <strong>Next Live Meet:</strong> January 15th, 2026 ·{" "}
         {TOTAL_SEATS - BOOKED_SEATS} seats remaining
@@ -83,8 +83,7 @@ const SeatSelector = () => {
             alert("Please log in to reserve a seat.");
             return;
           }
-
-          alert(`Seat ${selectedSeat} reserved! A confirmation ticket has been sent to your email.`);
+          onSeatReserved(selectedSeat);
         }}
       >
         {!selectedSeat
@@ -97,7 +96,7 @@ const SeatSelector = () => {
   );
 };
 
-const Member = () => {
+const Member = ({ onSeatReserved, hasReservedSeat }) => {
   return (
     <div className="membership-wrapper">
       <section className="membership-card">
@@ -109,7 +108,10 @@ const Member = () => {
           Join our community by reserving a seat in the online meeting below for free, and get to ask your questions and get mentorship directly from the entrepreneurs we interview weekly. Reminders will be sent to those who have their seats reserved.
         </p>
 
-        <SeatSelector />
+        <SeatSelector
+          onSeatReserved={onSeatReserved}
+          hasReservedSeat={hasReservedSeat}
+        />
       </section>
     </div>
   );

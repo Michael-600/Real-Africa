@@ -293,9 +293,16 @@ const Navbar = ({ onGetFeatured }) => {
               Get Featured
             </button>
             <Link to="/technology">Tech</Link>
+            <Link to="/communities">Communities</Link>
           </div>
           
-          <Link to="/get-mentored" className="navbar__cta">Get Mentored</Link>
+          <Link
+  to="/communities"
+  state={{ from: "mentored" }}
+  className="navbar__cta"
+>
+  Get Mentored
+</Link>
       
           <button
             className="menu-btn"
@@ -319,6 +326,8 @@ const Navbar = ({ onGetFeatured }) => {
         <Link onClick={() => setOpen(false)} to="/blog">Blog</Link>
         <Link onClick={() => setOpen(false)} to="/about-us">About Us</Link>
         <Link onClick={() => setOpen(false)} to="/technology">Tech</Link>
+        
+    
         <button
           onClick={() => {
             setOpen(false);
@@ -339,9 +348,9 @@ const Navbar = ({ onGetFeatured }) => {
         </button>
 
         <Link
-          to="/get-mentored"
+          to="/communities"
           className="mobile-cta"
-          onClick={() => setOpen(false)}
+          state={{ from: "mentored" }}
         >
           Get Mentored
         </Link>

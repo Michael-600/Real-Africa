@@ -1,9 +1,10 @@
  
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from '../lib/supabase'
+import { useAuth } from "../lib/authContext";
 import AccountMenu from "../components/AccountMenu";
-import { signUp } from '../lib/auth'
-import { signIn } from '../lib/auth'
+import NextLiveCallCard from "../components/NextLiveCallCard";
 
 
 /**
@@ -162,58 +163,7 @@ const tierCurricula = {
   ],
 };
 
-function ProgramCard({
-  title,
-  description,
-  imageSrc,
-  isLocked,
-  progressPercent,
-  expanded,
-  onToggle,
-  children,
-}) {
-  return (
-    <div
-      className={`program-card ${isLocked ? "locked-preview" : ""}`}
-      style={{ opacity: isLocked ? 0.85 : 1 }}
-    >
-      <img src={imageSrc} alt={title} className="program-card-image" />
 
-      <div className="program-card-body">
-        <h2 className="text-2xl font-semibold">{title}</h2>
-        <p className="text-sm text-zinc-500">{description}</p>
-
-        <div className="progress-bar mt-3">
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${isLocked ? 0 : progressPercent}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-zinc-500 mt-1">
-            <span>{isLocked ? "0%" : `${progressPercent}%`}</span>
-          </div>
-        </div>
-
-        <button
-          className={`watch-link mt-4 ${isLocked ? "locked-button" : ""}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggle();
-          }}
-        >
-          {isLocked ? "🔒 Upgrade to Unlock" : expanded ? "Hide Modules" : "Open Program"}
-        </button>
-
-        {!isLocked && expanded && (
-          <div className="mt-4 space-y-3">
-            {children}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 function CourseCard({
   module,
   completedLessons,
@@ -274,139 +224,174 @@ function CourseCard({
 // PAGE
 // -----------------------------
 export default function GetMentoredPage() {
-  // User state - replace hardcoded value
-  const [currentUser, setCurrentUser] = useState(null)
-  const [userTierLevel, setUserTierLevel] = useState(1) // Default to tier 1
-  
-  const hasCallAccess = nextLiveCall.tierRequired <= userTierLevel;
+  // -----------------------------
+  // ALL HOOKS FIRST
+  // -----------------------------
+  const navigate = useNavigate();
+  // Remove hasMockCommunity state and effect.
+
+  const { profile, loading } = useAuth();
+
+  const location = useLocation();
+
+  // TEMPORARY community membership check
+  // Replace this with real membership data when available
+  const joined = JSON.parse(
+    localStorage.getItem("joined_communities") || "[]"
+  );
+
+  const isInCommunity =
+    joined.length > 0 ||
+    (profile?.communities && profile.communities.length > 0);
+
+  // Enforce: must be in a community before accessing mentorship
+  if (!loading && profile && !isInCommunity) {
+    return (
+      <div className="mentorship-gate">
+        <div className="mentorship-gate-card">
+          <h2>Join a community to continue</h2>
+          <p>
+            Mentorship is available only to members of a community.
+            Join a community to unlock this feature.
+          </p>
+          <button
+            onClick={() =>
+              navigate("/communities", { state: { from: "mentored" } })
+            }
+          >
+            Browse communities
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
   const [showTierDropdown, setShowTierDropdown] = useState(false);
   const [showCourses, setShowCourses] = useState(true);
-  // Track which tiers are expanded (for preview)
-  const [expandedTiers, setExpandedTiers] = useState(new Set([userTierLevel]));
+  const [expandedTiers, setExpandedTiers] = useState(new Set());
 
-  // Upgrade prompt state
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [selectedUpgradeTier, setSelectedUpgradeTier] = useState(null);
 
-  // Tier preview (allows users to preview higher tiers)
-  const [previewTierLevel, setPreviewTierLevel] = useState(userTierLevel);
+  const [previewTierLevel, setPreviewTierLevel] = useState(null);
 
-  // Lesson modal
   const [activeLesson, setActiveLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState({});
 
-  // Progress + referrals (mock)
   const [lessonsWatched, setLessonsWatched] = useState(2);
   const totalLessonsThisWeek = 5;
 
-  const [referrals, setReferrals] = useState(1); // mock referrals
-  const unlockedBonusModules = referrals >= 1;
-  const hasFreeMonth = referrals >= 3;
+  const [referrals, setReferrals] = useState(1);
 
-  // LIVE CALL REMINDER MODAL state
   const [showCallReminder, setShowCallReminder] = useState(false);
-
-  // Mentor Request Modal state
   const [showMentorRequest, setShowMentorRequest] = useState(false);
 
-  // Test Supabase connection
+  const [courses, setCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [coursesError, setCoursesError] = useState(null);
+  
   useEffect(() => {
-    async function testConnection() {
-      const { data, error } = await supabase.from('users').select('*').limit(1)
-      if (error) {
-        console.error('Supabase error:', error)
-      } else {
-        console.log('✅ Database connected! Users:', data)
+    let cancelled = false;
+  
+    async function loadCourses() {
+      try {
+        setCoursesLoading(true);
+  
+        const { data, error } = await supabase
+          .from("courses")
+          .select(`
+            id,
+            title,
+            description,
+            tier_level,
+            modules (
+              id,
+              title,
+              description,
+              videos (
+                id,
+                title,
+                youtube_url
+              )
+            )
+          `);
+  
+        if (error) throw error;
+        if (!cancelled) setCourses(data || []);
+      } catch (err) {
+        console.error("Failed to load courses:", err);
+        if (!cancelled) setCoursesError(err);
+      } finally {
+        if (!cancelled) setCoursesLoading(false);
       }
     }
-    testConnection()
-  }, [])
+  
+    loadCourses();
+    return () => { cancelled = true };
+  }, []);
+  
 
-    // Check if user is logged in and fetch their tier
-  useEffect(() => {
-    async function checkUser() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        console.log('✅ User is logged in:', user.email)
-        setCurrentUser(user)
-        
-        // Fetch user's tier from database
-        const { data: userData, error } = await supabase
-          .from('users')
-          .select('tier_level')
-          .eq('email', user.email)
-          .single()
-        
-        if (error) {
-          console.error('Error fetching user tier:', error)
-          // If user doesn't exist in users table, create them
-          const { data: newUser } = await supabase
-            .from('users')
-            .insert([{ email: user.email, name: user.user_metadata?.name || 'User', tier_level: 1 }])
-            .select()
-            .single()
-          
-          if (newUser) {
-            setUserTierLevel(newUser.tier_level)
-            console.log('✅ Created user in database with tier:', newUser.tier_level)
-          }
-        } else if (userData) {
-          setUserTierLevel(userData.tier_level)
-          console.log('✅ User tier loaded from database:', userData.tier_level)
-        }
-      } else {
-        console.log('No user logged in')
-        setCurrentUser(null)
-        setUserTierLevel(1) // Reset to default
-      }
-    }
-    checkUser()
-  }, [])
+  console.log("RENDER", {
+    loading,
+    profileExists: !!profile,
+    coursesLoading,
+    tier: profile?.tier_level,
+  });
 
-  // Function to create a new user
-  async function createUser(email, name, tierLevel = 1) {
-    const { data, error } = await supabase
-      .from('users')
-      .insert([
-        { email, name, tier_level: tierLevel }
-      ])
-      .select()
-    
-    if (error) {
-      console.error('Error creating user:', error)
-      return null
-    } else {
-      console.log('✅ User created:', data)
-      return data[0]
-    }
+  console.log("GUARD CHECK", {
+    loading,
+    profile,
+    coursesLoading,
+  });
+
+  if (loading && !authResolvedOnce) {
+    return <div>Loading session…</div>;
+  }
+  
+  if (!profile) {
+    return (
+      <div className="p-8 text-red-500">
+        Profile not loaded. Please refresh or re-login.
+      </div>
+    );
   }
 
-  const effectiveTierLevel = previewTierLevel;
+  if (coursesLoading) {
+    return <div className="p-8 text-zinc-500">Loading courses…</div>;
+  }
 
-  const curriculum = tierCurricula[effectiveTierLevel] || [];
-  // Helper to get a tier's curriculum for preview
-  const getTierPreview = (tierLevel) => tierCurricula[tierLevel] || [];
+  const effectiveTierLevel =
+    previewTierLevel ?? profile.tier_level;
+
+  const hasCallAccess =
+    nextLiveCall.tierRequired <= profile.tier_level;
+
+  // Helper to get courses for a tier from database
+  const getCoursesForTier = (tierLevel) =>
+    courses.filter(c => c.tier_level === tierLevel)
+
+  // Helper: Extract YouTube ID from a URL
+  function getYoutubeId(url) {
+    const match = url?.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
+    )
+    return match ? match[1] : null
+  }
 
   // Progress helpers (global, single source of truth)
   const completedKeys = Object.keys(completedLessons);
-  // Flatten curriculum to ordered lesson keys
-  const allLessonKeys = curriculum.flatMap(module =>
-    module.videos.map((_, idx) => `${module.module}-${idx}`)
-  );
-  // First incomplete lesson is the current one
-  const currentLessonKey = allLessonKeys.find(
-    key => !completedLessons[key]
-  );
-
+  // For now, there are no lessons/videos in db courses (Phase 1)
+  const allLessonKeys = [];
+  const currentLessonKey = undefined;
+  const hasFreeMonth = referrals >= 3;
+  
   return (
     <div className="get-mentored-page">
       {/* GLOBAL ACCOUNT MENU (FIXED TOP RIGHT) */}
       <div className="account-menu-fixed">
         <AccountMenu
-          user={{ name: "Raydon Muregi", initials: "RM" }}
-          userTierLevel={userTierLevel}
           tiers={tiers}
           onUpgrade={(tier) => {
             setSelectedUpgradeTier(tier);
@@ -445,7 +430,7 @@ export default function GetMentoredPage() {
             <span className="tier-pill">
               Your Mentor Tier:{" "}
               <strong>
-                {tiers.find(t => t.level === userTierLevel)?.name}
+                {tiers.find(t => t.level === profile.tier_level)?.name}
               </strong>
             </span>
           </div>
@@ -518,7 +503,7 @@ export default function GetMentoredPage() {
             <div className="tier-dropdown-menu">
               {tiers.map(tier => {
                 const isActive = tier.level === effectiveTierLevel;
-                const isLocked = tier.level > userTierLevel;
+                const isLocked = tier.level > profile.tier_level;
 
                 return (
                   <div
@@ -548,84 +533,28 @@ export default function GetMentoredPage() {
           )}
         </section>
 
-        {/* NEXT LIVE CALL */}
-        <section>
-          <div
-            className={`live-call ${!hasCallAccess ? "locked" : ""}`}
-          >
-            <div className="space-y-1">
-              <p className="text-sm text-zinc-500">Next Live Call</p>
-              <h2 className="text-xl font-medium">{nextLiveCall.title}</h2>
-              <p className="text-zinc-600">{nextLiveCall.datetime}</p>
-              <p className="text-sm text-zinc-500">
-                Mentor Tier: {tiers.find(t => t.level === nextLiveCall.tierRequired)?.name}
-              </p>
-              {nextLiveCall.speaker && (
-                <div className="speaker-row speaker-highlight mt-3">
-                  <img
-                    src={nextLiveCall.speaker.photo}
-                    alt={nextLiveCall.speaker.name}
-                    className="speaker-avatar speaker-avatar-lg"
-                  />
-                  <div className="speaker-info">
-                    <p className="speaker-name text-lg font-semibold">
-                      {nextLiveCall.speaker.name}
-                    </p>
-                    <p className="speaker-role text-sm font-medium text-zinc-600">
-                      {nextLiveCall.speaker.role}
-                    </p>
-                    <div className="speaker-links">
-                      {nextLiveCall.speaker.links.linkedin && (
-                        <a href={nextLiveCall.speaker.links.linkedin} target="_blank" rel="noreferrer">
-                          LinkedIn
-                        </a>
-                      )}
-                      {nextLiveCall.speaker.links.website && (
-                        <a href={nextLiveCall.speaker.links.website} target="_blank" rel="noreferrer">
-                          Website
-                        </a>
-                      )}
-                      {nextLiveCall.speaker.links.portfolio && (
-                        <a href={nextLiveCall.speaker.links.portfolio} target="_blank" rel="noreferrer">
-                          Portfolio
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <button
-              disabled={!hasCallAccess}
-              className={hasCallAccess ? "enabled" : "disabled"}
-              onClick={() => {
-                if (!hasCallAccess) return;
-                setShowCallReminder(true);
-              }}
-            >
-              Join Live Call
-            </button>
-            <button
-              className="secondary mt-2"
-              onClick={() => setShowMentorRequest(true)}
-            >
-              Request to Become a Mentor
-            </button>
-          </div>
-        </section>
+        <NextLiveCallCard
+            nextLiveCall={nextLiveCall}
+            tiers={tiers}
+            hasCallAccess={hasCallAccess}
+            onJoinCall={() => {
+              if (!hasCallAccess) return;
+              setShowCallReminder(true);
+            }}
+            onRequestMentor={() => setShowMentorRequest(true)}
+          />
 
         <section className="class-section scroll-container">
           {/* Current tier access indicator */}
           <p className="text-sm text-zinc-500">
             You currently have access up to{" "}
-            <strong>{tiers.find(t => t.level === userTierLevel)?.name}</strong>
+            <strong>{tiers.find(t => t.level === profile.tier_level)?.name}</strong>
           </p>
           <div className="space-y-4">
             {tiers.map(tier => {
                 const isCurrentTier = tier.level === effectiveTierLevel;
-                const isLocked = tier.level > userTierLevel;
-                const hasAccess = tier.level <= userTierLevel;
+                const isLocked = tier.level > profile.tier_level;
+                const hasAccess = tier.level <= profile.tier_level;
 
                 return (
                   <div key={tier.level}>
@@ -696,14 +625,12 @@ export default function GetMentoredPage() {
 
                         <div className={`class-modules scrollable ${isLocked ? "locked-tier-preview" : ""}`}>
                           <div className="progress-rail">
-                          {/* Use tier's own curriculum for preview */}
-                          {getTierPreview(tier.level).map((module, idx) => {
-                            // For locked tiers, all modules are locked
+                          {/* Use DB courses for this tier */}
+                          {getCoursesForTier(tier.level).map((course) => {
                             const moduleIsLocked = isLocked;
-
                             return (
                               <div
-                                key={idx}
+                                key={course.id}
                                 className={`class-module ${moduleIsLocked ? "locked has-tooltip" : ""} ${isLocked ? "locked-preview" : ""}`}
                                 data-tooltip={moduleIsLocked ? "Upgrade to unlock this module" : undefined}
                                 onClick={() => {
@@ -717,66 +644,33 @@ export default function GetMentoredPage() {
                                   cursor: moduleIsLocked ? "pointer" : "default",
                                 }}
                               >
-                                <h3 className="text-lg font-medium">{module.module}</h3>
-                                <p className="text-sm text-zinc-500">{module.description}</p>
-                                <p className="text-xs text-zinc-500 mt-1">
-                                  {isLocked 
-                                    ? `0/${module.videos.length} lessons completed`
-                                    : `${Object.keys(completedLessons).filter(k => k.startsWith(module.module)).length}/${module.videos.length} lessons completed`}
-                                </p>
+                                <h3 className="text-lg font-medium">{course.title}</h3>
+                                <p className="text-sm text-zinc-500">{course.description}</p>
+                                {/* Render modules and videos */}
+                                {course.modules?.map(module => (
+                                  <div key={module.id} className="mt-3 pl-3 border-l">
+                                    <p className="text-sm font-medium">{module.title}</p>
+                                    <p className="text-xs text-zinc-500">{module.description}</p>
 
-                                <ul className="video-list">
-                                  {module.videos.map((video, vIdx) => {
-                                    const lessonKey = `${module.module}-${vIdx}`;
-                                    const isDone = !isLocked && completedLessons[lessonKey];
-                                    const isCurrent = !isLocked && lessonKey === currentLessonKey;
-                                    return (
-                                      <li
-                                        key={vIdx}
-                                        className={`video-item clickable ${isDone ? "done" : ""} ${isCurrent ? "current" : ""} ${isLocked ? "locked-video" : ""}`}
-                                        onClick={() => {
-                                          if (isLocked) {
-                                            setSelectedUpgradeTier(tier);
-                                            setShowUpgradePrompt(true);
-                                            return;
+                                    <ul className="mt-2 space-y-1">
+                                      {module.videos?.map(video => (
+                                        <li
+                                          key={video.id}
+                                          className="video-item clickable"
+                                          onClick={() =>
+                                            setActiveLesson({
+                                              id: video.id,
+                                              title: video.title,
+                                              url: video.youtube_url
+                                            })
                                           }
-                                          if (!hasAccess) {
-                                            setSelectedUpgradeTier(tier);
-                                            setShowUpgradePrompt(true);
-                                            return;
-                                          }
-                                          setActiveLesson({ ...video, key: lessonKey });
-                                        }}
-                                        style={{
-                                          opacity: isLocked ? 0.85 : 1,
-                                          cursor: isLocked ? "pointer" : "pointer",
-                                        }}
-                                      >
-                                        <span>
-                                          {video.title}
-                                          {isDone && <span className="done-indicator"> ✓</span>}
-                                          {isCurrent && <span className="current-indicator"> ← you are here</span>}
-                                        </span>
-                                        <button
-                                          className={`watch-link ${isLocked || !hasAccess ? "disabled locked-button" : ""}`}
-                                          disabled={isLocked || !hasAccess}
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (isLocked || !hasAccess) {
-                                              setSelectedUpgradeTier(tier);
-                                              setShowUpgradePrompt(true);
-                                              return;
-                                            }
-                                            setActiveLesson({ ...video, key: lessonKey });
-                                          }}
                                         >
-                                          {isLocked ? "🔒 Locked" : hasAccess ? "Watch" : "Locked"}
-                                        </button>
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-
+                                          ▶ {video.title}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ))}
                                 {moduleIsLocked && (
                                   <p className="text-xs text-zinc-500 mt-2">
                                     🔒 Upgrade to unlock this module
@@ -814,8 +708,8 @@ export default function GetMentoredPage() {
                 What you’ll unlock:
               </p>
               <ul className="text-sm text-zinc-600 list-disc list-inside">
-                {getTierPreview(selectedUpgradeTier.level).map((module, idx) => (
-                  <li key={idx}>{module.module}</li>
+                {getCoursesForTier(selectedUpgradeTier.level).map((course) => (
+                  <li key={course.id}>{course.title}</li>
                 ))}
               </ul>
             </div>
@@ -900,7 +794,7 @@ export default function GetMentoredPage() {
 
             <div className="video-frame">
               <iframe
-                src={`https://www.youtube.com/embed/${activeLesson.url?.split("v=")[1]}`}
+                src={`https://www.youtube.com/embed/${getYoutubeId(activeLesson.url)}`}
                 allowFullScreen
                 title={activeLesson.title}
               />
@@ -911,7 +805,7 @@ export default function GetMentoredPage() {
               onClick={() => {
                 setCompletedLessons(prev => ({
                   ...prev,
-                  [activeLesson.key]: true,
+                  [activeLesson.id]: true,
                 }));
                 setLessonsWatched(l => Math.min(l + 1, totalLessonsThisWeek));
                 setActiveLesson(null);

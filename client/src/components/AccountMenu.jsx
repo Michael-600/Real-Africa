@@ -1,20 +1,19 @@
-import React from 'react';
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../lib/authContext";
 
 export default function AccountMenu({
-  user,
-  userTierLevel = null,
   tiers = [],
   onUpgrade,
 }) {
+  const { user, profile } = useAuth();
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
-  const [avatarUrl, setAvatarUrl] = useState(user?.avatar || null);
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || null);
   const fileInputRef = useRef(null);
-
   const currentTier =
-    Array.isArray(tiers) && userTierLevel != null
-      ? tiers.find(t => t.level === userTierLevel)
+    Array.isArray(tiers) && profile?.tier_level != null
+      ? tiers.find(t => t.level === profile.tier_level)
       : null;
 
   useEffect(() => {
@@ -27,6 +26,22 @@ export default function AccountMenu({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const displayName =
+    profile?.full_name ||
+    user?.email?.split("@")[0] ||
+    "User";
+
+  const initials =
+    displayName
+      .split(" ")
+      .map(n => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+
+  if (!profile) return null;
+
+
   return (
     <div className="account-menu-wrapper" ref={menuRef}>
       {/* Avatar */}
@@ -38,7 +53,7 @@ export default function AccountMenu({
       className="account-avatar-img"
     />
   ) : (
-    <span>{user?.initials || "U"}</span>
+    <span>{initials}</span>
   )}
 </button>
 
@@ -59,11 +74,26 @@ export default function AccountMenu({
             }}
           />
           <div className="account-header">
-            <p className="account-name">{user?.name || "User"}</p>
+            <p className="account-name">{displayName}</p>
+            {profile?.role === "admin" && (
+              <span
+                className="text-xs px-2 py-1 rounded inline-block mt-1 font-medium"
+                style={{color: "#047857" }}
+              >
+                Admin
+              </span>
+            )}
             <p className="account-tier">
               {currentTier?.name}
             </p>
           </div>
+          {/*<div
+            className="font-semibold"
+            style={{ color: "rgb(5 150 105)" }}
+          >
+              Tailwind is working
+          </div>*/}
+          
 
           <div className="account-section">
             <p className="account-label">Current Plan</p>
@@ -85,9 +115,9 @@ export default function AccountMenu({
             <button
               className="account-upgrade"
               onClick={() => {
-                if (!Array.isArray(tiers) || userTierLevel == null || !onUpgrade) return;
+                if (!Array.isArray(tiers) || profile?.tier_level == null || !onUpgrade) return;
 
-                const nextTier = tiers.find(t => t.level === userTierLevel + 1);
+                const nextTier = tiers.find(t => t.level === profile.tier_level + 1);
                 if (nextTier) {
                   onUpgrade(nextTier);
                   setOpen(false);
@@ -107,7 +137,13 @@ export default function AccountMenu({
           </div>
 
           <div className="account-footer">
-            <button className="account-logout">
+            <button
+              className="account-logout"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                window.location.href = "/auth";
+              }}
+            >
               Log out
             </button>
           </div>
