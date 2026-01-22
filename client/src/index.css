@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
+
+
+/* Your existing CSS continues below */
 * {
   margin: 0;
   padding: 0;
@@ -4714,6 +4717,20 @@ body {
   color: var(--text-main);
 }
 
+
+
+.card-image {
+  height: 180px;          /* your header height */
+  overflow: hidden;
+  position: relative;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* THIS is the key */
+}
+
 /* =========================
    RESPONSIVE
    ========================= */
@@ -4733,3 +4750,64 @@ body {
     font-size: 32px;
   }
 }
+
+/* Break out of MainLayout constraints */
+.mentorship-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1.5rem;
+  background: #fafafa;
+}
+
+/* Card */
+.mentorship-gate-card {
+  width: 100%;
+  max-width: 420px;
+
+  background: #ffffff;
+  text-align: center;
+
+  padding: 2rem 1.75rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Typography */
+.mentorship-gate-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.mentorship-gate-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #52525b;
+  margin-bottom: 1.5rem;
+}
+
+/* Button */
+.mentorship-gate-card button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .mentorship-gate-card h2 {
+    font-size: 1.75rem;
+  }
+}
+

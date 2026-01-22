@@ -1,5 +1,6 @@
  
 import React, { useState, useEffect } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { supabase } from '../lib/supabase'
 import { useAuth } from "../lib/authContext";
 import AccountMenu from "../components/AccountMenu";
@@ -226,7 +227,56 @@ export default function GetMentoredPage() {
   // -----------------------------
   // ALL HOOKS FIRST
   // -----------------------------
+  const [hasMockCommunity, setHasMockCommunity] = React.useState(
+    localStorage.getItem("mock_joined_community") === "true"
+  );
+  
+  React.useEffect(() => {
+    const handleStorage = () => {
+      setHasMockCommunity(
+        localStorage.getItem("mock_joined_community") === "true"
+      );
+    };
+  
+    window.addEventListener("storage", handleStorage);
+    handleStorage(); // also re-check on mount
+  
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
   const { profile, loading } = useAuth();
+
+  const location = useLocation();
+
+  // TEMPORARY community membership check
+  // Replace this with real membership data when available
+  const isInCommunity =
+  hasMockCommunity ||
+  (profile?.communities && profile.communities.length > 0);
+
+  // Enforce: must be in a community before accessing mentorship
+  if (!loading && profile && !isInCommunity) {
+    return (
+      <div className="mentorship-gate">
+        <div className="mentorship-gate-card">
+          <h2>Join a community to continue</h2>
+          <p>
+            Mentorship is available only to members of a community.
+            Join a community to unlock this feature.
+          </p>
+          <button
+            onClick={() =>
+              navigate("/communities", { state: { from: "mentored" } })
+            }
+          >
+            Browse communities
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);

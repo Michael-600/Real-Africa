@@ -15,6 +15,8 @@ import Auth from "./pages/Auth";
 import { AuthProvider } from "./lib/authContext"
 import Communities from './pages/communities'
 import CommunityPage from './pages/CommunityPage';
+import AdminPage from "../Admin/AdminPage";
+
 
 function App() {
   const ProtectedRoute = ({ children }) => {
@@ -28,7 +30,33 @@ function App() {
       );
     }
   
-    return user ? children : <Navigate to="/auth" />;
+    if (!user) {
+      return <Navigate to="/auth" replace />;
+    }
+  
+    return children;
+  };
+
+  const AdminRoute = ({ children }) => {
+    const { user, profile, loading } = useAuth();
+
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <p className="text-zinc-500">Loading…</p>
+        </div>
+      );
+    }
+
+    if (!user) {
+      return <Navigate to="/auth" replace />;
+    }
+
+    if (profile?.role !== "admin") {
+      return <Navigate to="/" replace />;
+    }
+
+    return children;
   };
 
   return (
@@ -68,6 +96,14 @@ function App() {
           }
         />        
           <Route path="/interviews/:id" element={<InterviewSelect />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
         </Routes>
       </MainLayout>
     </BrowserRouter>

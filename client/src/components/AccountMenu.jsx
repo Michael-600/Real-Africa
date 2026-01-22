@@ -41,6 +41,7 @@ export default function AccountMenu({
 
   if (!profile) return null;
 
+
   return (
     <div className="account-menu-wrapper" ref={menuRef}>
       {/* Avatar */}
@@ -74,10 +75,25 @@ export default function AccountMenu({
           />
           <div className="account-header">
             <p className="account-name">{displayName}</p>
+            {profile?.role === "admin" && (
+              <span
+                className="text-xs px-2 py-1 rounded inline-block mt-1 font-medium"
+                style={{color: "#047857" }}
+              >
+                Admin
+              </span>
+            )}
             <p className="account-tier">
               {currentTier?.name}
             </p>
           </div>
+          {/*<div
+            className="font-semibold"
+            style={{ color: "rgb(5 150 105)" }}
+          >
+              Tailwind is working
+          </div>*/}
+          
 
           <div className="account-section">
             <p className="account-label">Current Plan</p>

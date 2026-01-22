@@ -1,8 +1,34 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 export default function Communities() {
-    const cards = [1, 2, 3, 4, 5, 6];
+    const communities = [
+      {
+        id: "entrepreneurship",
+        name: "The Real Africa Entrepreneurship Community",
+        members: 100,
+        price: "Free",
+        image: "/assets/entrepreneurship.jpg",
+        slug: "get-mentored",
+      },
+      {
+        id: "technology",
+        name: "Technology Builders Community",
+        members: 82,
+        price: "Free",
+        image: "/assets/entrepreneurship.jpg",
+        slug: "technology",
+      },
+      {
+        id: "music",
+        name: "Music Creators Community",
+        members: 56,
+        price: "Free",
+        image: "/assets/entrepreneurship.jpg",
+        slug: null,
+      },
+    ];
     const navigate = useNavigate();
   
     return (
@@ -11,7 +37,6 @@ export default function Communities() {
         <header className="discover-nav">
           <div className="nav-inner">
             <div className="logo">Communities Powered by The Real Africa</div>
-            <button className="login-btn">Log in</button>
           </div>
         </header>
   
@@ -55,37 +80,74 @@ export default function Communities() {
         {/* Grid */}
         <section className="grid-wrap">
           <div className="community-grid">
-            {cards.map((i) => (
+            {communities.map((community, index) => (
               <div
-              key={i}
-              className="community-card"
-              onClick={() => {
-                if (i === 1) {
-                  navigate("/communities/get-mentored");
-                }
-              }}
-            >
+                key={community.id}
+                className="community-card"
+                onClick={() => {
+                  if (community.slug) {
+                    navigate(`/communities/${community.slug}`);
+                  }
+                }}
+              >
                 <div className="card-image">
-                  <span className="rank">#{i}</span>
+                  <img
+                    src={community.image}
+                    alt="Community cover"
+                    className="card-img"
+                  />
+                  <span className="rank">#{index + 1}</span>
                 </div>
-  
+
                 <div className="card-body">
-                  <h3>The Real Africa Community</h3>
+                  <h3>{community.name}</h3>
                   <p>
                     A community built to learn, discuss, and grow
                     together with like-minded people.
                   </p>
-  
+                  {community.slug && (
+                    <button
+                      className="join-community-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        localStorage.setItem(
+                          "mock_joined_community",
+                          community.id
+                        );
+                        navigate(`/communities/${community.slug}`);
+                      }}
+                    >
+                      Join community
+                    </button>
+                  )}
                   <div className="card-meta">
-                    <span>12.3k Members</span>
+                    <span>{community.members} Members</span>
                     <span>•</span>
-                    <strong>Free</strong>
+                    <strong>{community.price}</strong>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </section>
+
+        <style>{`
+          .join-community-btn {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #111827;
+            color: #ffffff;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+          }
+
+          .join-community-btn:hover {
+            background: #000000;
+          }
+        `}</style>
       </div>
     );
   }
