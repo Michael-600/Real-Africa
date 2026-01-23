@@ -1,5 +1,7 @@
 import React from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../lib/authContext";
 
 
 export default function Communities() {
@@ -26,17 +28,29 @@ export default function Communities() {
         members: 56,
         price: "Free",
         image: "/assets/entrepreneurship.jpg",
-        slug: null,
+        slug: "music",
       },
     ];
     const navigate = useNavigate();
-    const [joiningId, setJoiningId] = React.useState(null);
+    const { user } = useAuth();
     return (
       <div className="discover-page">
         {/* Top Nav */}
         <header className="discover-nav">
           <div className="nav-inner">
             <div className="logo">Communities Powered by The Real Africa</div>
+            <button
+              className="community-auth-btn"
+              onClick={() => {
+                if (user) {
+                  supabase.auth.signOut();
+                } else {
+                  navigate("/auth");
+                }
+              }}
+            >
+              {user ? "Log out" : "Log in"}
+            </button>
           </div>
         </header>
   
@@ -81,11 +95,6 @@ export default function Communities() {
         <section className="grid-wrap">
           <div className="community-grid">
             {communities.map((community, index) => {
-              const joined =
-                JSON.parse(localStorage.getItem("joined_communities") || "[]");
-
-              const isJoined = joined.includes(community.id);
-
               return (
               <div
                 key={community.id}
@@ -111,36 +120,16 @@ export default function Communities() {
                     A community built to learn, discuss, and grow
                     together with like-minded people.
                   </p>
-                  {community.slug && !isJoined && (
+                  {community.slug && (
                     <button
                       className="join-community-btn"
-                      disabled={joiningId === community.id}
                       onClick={(e) => {
                         e.stopPropagation();
-
-                        setJoiningId(community.id);
-
-                        const joined =
-                          JSON.parse(localStorage.getItem("joined_communities") || "[]");
-
-                        if (!joined.includes(community.id)) {
-                          joined.push(community.id);
-                          localStorage.setItem(
-                            "joined_communities",
-                            JSON.stringify(joined)
-                          );
-                        }
-
-                        setTimeout(() => {
-                          setJoiningId(null);
-                        }, 600);
+                        navigate(`/communities/${community.slug}`);
                       }}
                     >
-                      {joiningId === community.id ? "Joining…" : "Join community"}
+                      Learn more
                     </button>
-                  )}
-                  {isJoined && (
-                    <span className="joined-badge">✓ Joined</span>
                   )}
                   <div className="card-meta">
                     <span>{community.members} Members</span>

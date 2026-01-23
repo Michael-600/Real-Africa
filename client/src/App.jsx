@@ -92,13 +92,9 @@ function App() {
             <ProtectedRoute>
             <Technology /> 
             </ProtectedRoute> } />
-            <Route
+        <Route
           path="/communities/:slug"
-          element={
-            <ProtectedRoute>
-              <CommunityPage />
-            </ProtectedRoute>
-          }
+          element={<CommunityPage />}
         />        
           <Route path="/interviews/:id" element={<InterviewSelect />} />
           <Route

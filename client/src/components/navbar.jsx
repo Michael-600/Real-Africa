@@ -123,6 +123,39 @@ const Navbar = ({ onGetFeatured }) => {
           cursor: pointer;
           white-space: nowrap;
           flex-shrink: 0;
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+          transition: padding 0.2s ease;
+        }
+
+        .navbar__cta-title {
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1.1;
+        }
+
+        .navbar__cta-subtitle {
+          color: rgba(31, 34, 48, 0.7);
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          opacity: 0;
+          max-height: 0;
+          overflow: hidden;
+          pointer-events: none;
+          transition: opacity 0.2s ease, max-height 0.2s ease;
+        }
+
+        .navbar__cta:hover .navbar__cta-subtitle {
+          opacity: 1;
+          max-height: 16px;
+        }
+
+        .navbar__cta:hover {
+          padding: 14px 32px 22px;
         }
 
         /* Hamburger */
@@ -292,17 +325,17 @@ const Navbar = ({ onGetFeatured }) => {
             >
               Get Featured
             </button>
-            <Link to="/technology">Tech</Link>
-            <Link to="/communities">Communities</Link>
+            
           </div>
           
           <Link
-  to="/communities"
-  state={{ from: "mentored" }}
-  className="navbar__cta"
->
-  Get Mentored
-</Link>
+            to="/communities"
+            state={{ from: "mentored" }}
+            className="navbar__cta"
+          >
+            <span className="navbar__cta-title">Get Mentored</span>
+            <span className="navbar__cta-subtitle">View Communities</span>
+          </Link>
       
           <button
             className="menu-btn"
@@ -325,7 +358,7 @@ const Navbar = ({ onGetFeatured }) => {
         <Link onClick={() => setOpen(false)} to="/">Home</Link>
         <Link onClick={() => setOpen(false)} to="/blog">Blog</Link>
         <Link onClick={() => setOpen(false)} to="/about-us">About Us</Link>
-        <Link onClick={() => setOpen(false)} to="/technology">Tech</Link>
+        
         
     
         <button
