@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export default function AdminLayout({ children }) {
   return (
@@ -24,7 +24,7 @@ export default function AdminLayout({ children }) {
         className="admin-content"
         style={{ flex: 1, padding: 32 }}
       >
-        {children}
+        <Outlet />
       </main>
     </div>
   );
