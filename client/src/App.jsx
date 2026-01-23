@@ -15,8 +15,11 @@ import Auth from "./pages/Auth";
 import { AuthProvider } from "./lib/authContext"
 import Communities from './pages/communities'
 import CommunityPage from './pages/CommunityPage';
-import AdminPage from "../Admin/AdminPage";
-import UsersAdmin from "../Admin/UsersAdmin";
+import AdminLayout from "../admin/AdminLayout";
+import AdminDashboard from "../admin/AdminDashboard";
+import AdminUsers from "../admin/AdminUsers";
+
+
 
 function App() {
   const ProtectedRoute = ({ children }) => {
@@ -39,8 +42,10 @@ function App() {
 
   const AdminRoute = ({ children }) => {
     const { user, profile, loading } = useAuth();
-
-    if (loading) {
+    console.log("AUTH PROFILE:", profile);
+    console.log("USER:", user);
+    console.log("PROFILE:", profile);
+    if (loading && !user) {
       return (
         <div className="flex items-center justify-center min-h-screen">
           <p className="text-zinc-500">Loading…</p>
@@ -52,7 +57,7 @@ function App() {
       return <Navigate to="/auth" replace />;
     }
 
-    if (profile?.role !== "admin") {
+    if (!profile || profile.role?.toLowerCase() !== "admin") {
       return <Navigate to="/" replace />;
     }
 
@@ -100,11 +105,12 @@ function App() {
             path="/admin"
             element={
               <AdminRoute>
-                <AdminPage />
+                <AdminLayout />
               </AdminRoute>
             }
           >
-            <Route path="users" element={<UsersAdmin />} />
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
           </Route>
         </Routes>
       </MainLayout>

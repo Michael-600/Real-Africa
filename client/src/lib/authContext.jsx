@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
       setAuthResolvedOnce(true);
     }
   }, [loading, user]);
+  
 
   const loadProfile = async (authUser) => {
     if (!authUser) {
@@ -47,17 +48,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Removed duplicate auth initialization logic.
+
   useEffect(() => {
     const init = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      try {
+        setLoading(true);
 
-      const authUser = session?.user ?? null;
-      setUser(authUser);
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      await loadProfile(authUser);
-      setLoading(false);
+        const authUser = session?.user ?? null;
+        setUser(authUser);
+
+        await loadProfile(authUser);
+      } catch (err) {
+        console.error("Auth init failed:", err);
+        setUser(null);
+        setProfile(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     init();
