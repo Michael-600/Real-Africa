@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AccountMenu from "../../components/AccountMenu";
 import Opportunities from "./opportunities";
+import { useAuth } from "../../lib/authContext";
 
 // -----------------------------
 // TECHNOLOGY SUBSCRIPTION MODEL
@@ -16,6 +17,8 @@ const upcomingWebinars = [
     title: "Modern Frontend Architecture in React",
     datetime: "Jan 18, 2026 · 7:00 PM EAT",
     track: "Frontend",
+    tierRequired: 1,
+    link: "https://www.youtube.com/watch?v=2Ji-clqUYnA",
     speaker: {
       name: "Senior Frontend Engineer",
       role: "React / Next.js",
@@ -26,6 +29,8 @@ const upcomingWebinars = [
     title: "Designing Scalable Backend Systems",
     datetime: "Jan 22, 2026 · 7:00 PM EAT",
     track: "Backend",
+    tierRequired: 3,
+    link: "https://www.youtube.com/watch?v=VwVg9jCtqaU",
     speaker: {
       name: "Backend Architect",
       role: "Node, Go, Postgres",
@@ -86,6 +91,8 @@ const techTracks = [
 // PAGE
 // -----------------------------
 export default function TechnologyPage() {
+  const { profile } = useAuth();
+  const userTier = profile?.tier_level ?? 0;
   // Referrals and invite modal
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
@@ -150,8 +157,10 @@ export default function TechnologyPage() {
         <section>
           <h2 className="text-2xl font-semibold mb-3">Upcoming Webinars</h2>
           <div className="webinars-list space-y-4">
-            {upcomingWebinars.map((webinar, idx) => (
-              <div key={idx} className="webinar-card">
+            {upcomingWebinars.map((webinar, idx) => {
+              const hasAccess = userTier >= webinar.tierRequired;
+              return (
+              <div key={idx} className={`webinar-card ${hasAccess ? "" : "locked"}`}>
                 <div className="webinar-info">
                   <img
                     src={webinar.speaker.avatar}
@@ -171,23 +180,22 @@ export default function TechnologyPage() {
                   </div>
                 </div>
                 <button
-                  className={`primary mt-3 ${!hasTechSubscription ? "disabled" : ""}`}
-                  disabled={!hasTechSubscription}
+                  className={`primary mt-3 ${!hasAccess ? "disabled" : ""}`}
+                  disabled={!hasAccess}
                   onClick={() => {
-                    if (!hasTechSubscription) {
+                    if (!hasAccess) {
                       setShowUpgradePrompt(true);
                     } else {
-                      // join webinar logic here
-                      alert("Joining webinar...");
+                      window.open(webinar.link, "_blank", "noopener,noreferrer");
                     }
                   }}
                 >
-                  {!hasTechSubscription
-                    ? `Subscribe to Join (${TECH_SUBSCRIPTION_PRICE})`
+                  {!hasAccess
+                    ? `Upgrade to Tier ${webinar.tierRequired}+`
                     : "Join Webinar"}
                 </button>
               </div>
-            ))}
+            )})}
           </div>
         </section>
         

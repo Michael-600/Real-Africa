@@ -28,7 +28,7 @@ const SeatSelector = ({ onSeatReserved, hasReservedSeat }) => {
       </p>
 
       <div className="seat-grid" style={{
-        maxWidth: 360,
+        maxWidth: 300,
         margin: "0 auto",
       }}>
         {seats.map((seat) => {
@@ -43,8 +43,8 @@ const SeatSelector = ({ onSeatReserved, hasReservedSeat }) => {
               aria-label={`Seat ${seat.id}`}
               title={`Seat ${seat.id}`}
               style={{
-                width: 52,
-                height: 52,
+                width: 44,
+                height: 44,
                 borderRadius: "50%",
                 background: seat.booked
                   ? "#e5e7eb"
@@ -59,7 +59,7 @@ const SeatSelector = ({ onSeatReserved, hasReservedSeat }) => {
               }}
             >
               <Armchair
-                size={22}
+                size={18}
                 strokeWidth={2}
                 className="seat-icon"
                 color={

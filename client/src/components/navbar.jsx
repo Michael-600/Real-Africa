@@ -1,10 +1,14 @@
 import React from 'react';
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../lib/authContext";
+import AccountMenu from "./AccountMenu";
 
 
 const Navbar = ({ onGetFeatured }) => {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const { user, profile } = useAuth();
 
   useEffect(() => {
     const indicator = document.querySelector(".scroll-indicator");
@@ -53,9 +57,7 @@ const Navbar = ({ onGetFeatured }) => {
           z-index: 1001;
           box-sizing: border-box;
           width: 100%;
-          overflow-x: hidden;
-          max-width: 100vw;
-          overflow: hidden;
+          overflow: visible;
         }
 
         .navbar__logo img {
@@ -71,6 +73,8 @@ const Navbar = ({ onGetFeatured }) => {
           gap: 32px;
           min-width: 0;
           flex-shrink: 1;
+          position: relative;
+          z-index: 1002;
         }
 
         .navbar__links {
@@ -156,6 +160,21 @@ const Navbar = ({ onGetFeatured }) => {
 
         .navbar__cta:hover {
           padding: 14px 32px 22px;
+        }
+
+        .navbar__auth {
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          border-radius: 999px;
+          padding: 10px 18px;
+          font-size: 14px;
+          font-weight: 600;
+          color: #ffffff;
+          text-decoration: none;
+          transition: border-color 0.2s ease;
+        }
+
+        .navbar__auth:hover {
+          border-color: #ffffff;
         }
 
         /* Hamburger */
@@ -336,6 +355,18 @@ const Navbar = ({ onGetFeatured }) => {
             <span className="navbar__cta-title">Get Mentored</span>
             <span className="navbar__cta-subtitle">View Communities</span>
           </Link>
+
+          {user && profile ? (
+            <AccountMenu />
+          ) : (
+            <Link
+              to="/auth"
+              state={{ from: location.pathname }}
+              className="navbar__auth"
+            >
+              Log in
+            </Link>
+          )}
       
           <button
             className="menu-btn"
@@ -387,6 +418,16 @@ const Navbar = ({ onGetFeatured }) => {
         >
           Get Mentored
         </Link>
+
+        {!user && (
+          <Link
+            to="/auth"
+            className="mobile-cta"
+            state={{ from: location.pathname }}
+          >
+            Log in
+          </Link>
+        )}
       </div>
     </>
   );
