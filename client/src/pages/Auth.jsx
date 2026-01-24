@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/authContext";
 
@@ -15,12 +15,14 @@ export default function Auth() {
   const [signUpPassword, setSignUpPassword] = useState("");
   const [signUpLoading, setSignUpLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loading } = useAuth();
+  const from = location.state?.from || "/";
   useEffect(() => {
     if (!loading && user) {
-      navigate("/", { replace: true });
+      navigate(from, { replace: true });
     }
-  }, [loading, user, navigate]);
+  }, [loading, user, navigate, from]);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [signUpError, setSignUpError] = useState("");
@@ -46,6 +48,8 @@ export default function Auth() {
 
     if (error) {
       setErrorMessage(error.message);
+    } else {
+      navigate(from, { replace: true });
     }
 
     setFormLoading(false);

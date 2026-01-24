@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./supabase";
+import { ensureReferralCode, trackReferralSignup } from "./referrals";
 
 const AuthContext = createContext({
   user: null,
@@ -84,6 +85,13 @@ export const AuthProvider = ({ children }) => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    ensureReferralCode(user.id);
+    trackReferralSignup();
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, profile, loading, authResolvedOnce }}>

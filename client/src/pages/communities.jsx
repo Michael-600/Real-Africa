@@ -1,7 +1,5 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../lib/supabase";
-import { useAuth } from "../lib/authContext";
 
 
 export default function Communities() {
@@ -32,25 +30,12 @@ export default function Communities() {
       },
     ];
     const navigate = useNavigate();
-    const { user } = useAuth();
     return (
       <div className="discover-page">
         {/* Top Nav */}
         <header className="discover-nav">
           <div className="nav-inner">
             <div className="logo">Communities Powered by The Real Africa</div>
-            <button
-              className="community-auth-btn"
-              onClick={() => {
-                if (user) {
-                  supabase.auth.signOut();
-                } else {
-                  navigate("/auth");
-                }
-              }}
-            >
-              {user ? "Log out" : "Log in"}
-            </button>
           </div>
         </header>
   

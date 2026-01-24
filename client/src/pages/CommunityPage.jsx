@@ -1,6 +1,10 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../lib/authContext";
+import {
+  storeReferralAttribution,
+  trackReferralConversion,
+} from "../lib/referrals";
 
 import GetMentoredPage from "./get-mentored";
 import Technology from "./categories/technology";
@@ -74,6 +78,7 @@ const COMMUNITY_REGISTRY = {
 export default function CommunityPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [hasEntered, setHasEntered] = React.useState(false);
 
@@ -95,6 +100,14 @@ export default function CommunityPage() {
   const joined =
     JSON.parse(localStorage.getItem("joined_communities") || "[]");
   const isJoined = joined.includes(community.id);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const code = params.get("ref");
+    if (code) {
+      storeReferralAttribution(code, slug);
+    }
+  }, [location.search, slug]);
 
   const hasCommunityApp = Boolean(community.component);
 
@@ -149,12 +162,13 @@ export default function CommunityPage() {
           {user && !isJoined && (
             <button
               className="community-landing__cta"
-              onClick={() => {
+              onClick={async () => {
                 const updated = Array.from(new Set([...joined, community.id]));
                 localStorage.setItem(
                   "joined_communities",
                   JSON.stringify(updated)
                 );
+                await trackReferralConversion("join_community", slug);
               }}
             >
               Join community
