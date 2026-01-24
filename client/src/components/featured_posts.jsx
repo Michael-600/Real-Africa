@@ -11,28 +11,46 @@ if (typeof window !== "undefined") {
 function FeaturedPosts() {
   const posts = [
     {
-      author: "Real Africa Team",
-      date: "Aug 23, 2024",
-      title: "How African Startups Are Solving Billion-Dollar Problems Continent-Wide.",
-      highlight: false,
-    },
-    {
-      author: "Raydon M",
-      date: "May 02, 2025",
-      title: "What African Architecture Teaches Us About Design Thinking.",
+      author: "Raydon Muregi",
+      date: "August 1, 2025",
+      title: "Climate Innovation on a Global Stage: Why Uzoma Bailey Ayogu is a Forbes 30 Under 30 Trailblazer.",
       highlight: true,
     },
     {
-      author: "Debbie L.",
-      date: "Aug 20, 2021",
-      title: "How a Nairobi Founder Raised $1M Without Silicon Valley : All the tea spilled out.",
+      author: "Raydon Muregi",
+      date: "Jan 2, 2026",
+      title: "From Curiosity to Inclusion: How Elly Savatia is Engineering a More Accessible Africa.",
       highlight: false,
     },
     {
-      author: "Real Africa Team",
-      date: "Aug 23, 2023",
-      title: "Scaling Through Crisis: A Ghanaian CEO on Inflation and Resilience.",
+      author: "Raydon Muregi",
+      date: "December 9, 2025",
+      title: "The Art of the Scale: Lessons in Leadership and Resilience from Peter Nduati.",
+      highlight: true,
+    },
+    {
+      author: "Anne Mokua",
+      date: "Sep 2o, 2025",
+      title: "Navigating Borders: How Dr. G. O. Ouma is Using AI to Simplify Global Mobility.",
       highlight: false,
+    },
+    {
+      author: "Raydon Muregi",
+      date: "June 10, 2025",
+      title: "You Are a Brand: Nancy Muthoni on the Currencies of Credibility and Excellence.",
+      highlight: false,
+    },
+    {
+      author: "Michael Hayford",
+      date: "Dec 19, 2024",
+      title: "Data-Driven Success: How Oze is Helping 97% of Small Businesses Thrive Across Africa.",
+      highlight: false,
+    },
+    {
+      author: "Raydon Muregi",
+      date: "May 19, 2024",
+      title: "Building with Faith: How Isaac Nyangolo is Using Tech to Heal African Education Systems.",
+      highlight: true,
     },
   ];
 
@@ -132,7 +150,7 @@ function FeaturedPosts() {
                 color: "var(--text-primary)",
               }}
             >
-              What African Architecture Teaches Us About Design Thinking.
+              If you don't trust yourself take a job!
             </h3>
 
             <p
@@ -144,28 +162,31 @@ function FeaturedPosts() {
                 maxWidth: 600,
               }}
             >
-              We explore the link between environment, culture, and scalable innovation through African urban design.
+              Peter Nduati talks about the harsh realities of the day to day entrepreneur.
             </p>
 
-            <button
-              style={{
-                alignSelf: "flex-start",
-                padding: "14px 40px",
-                background: "#FCD34D",
-                borderRadius: 50,
-                border: "1px solid #1f2937",
-                fontFamily: "inherit",
-                fontSize: 18,
-                fontWeight: 700,
-                cursor: "pointer",
-                color: "#1f2937",
-                boxShadow: "inset 0 -2px 0 rgba(0,0,0,0.15)",
-                width: "100%",
-                maxWidth: 280,
-              }}
+            <a
+              href="http://localhost:5173/interviews"
+              style={{ textDecoration: "none", alignSelf: "flex-start", width: "100%", maxWidth: 280 }}
             >
-              Read More &gt;
-            </button>
+              <button
+                style={{
+                  padding: "14px 40px",
+                  background: "#FCD34D",
+                  borderRadius: 50,
+                  border: "1px solid #1f2937",
+                  fontFamily: "inherit",
+                  fontSize: 18,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  color: "#1f2937",
+                  boxShadow: "inset 0 -2px 0 rgba(0,0,0,0.15)",
+                  width: "100%",
+                }}
+              >
+                Read More &gt;
+              </button>
+            </a>
           </div>
 
           {/* List */}

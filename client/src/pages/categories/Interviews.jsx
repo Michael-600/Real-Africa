@@ -69,7 +69,7 @@ export default function Interviews() {
 
           <img
             className="interviews-image"
-            src="https://placehold.co/547x308"
+            src="/assets/nduati.png"
             alt="Featured interview"
           />
 
@@ -84,17 +84,16 @@ export default function Interviews() {
 
           <div className="interviews-meta">
             <span className="meta-muted">By </span>
-            <span className="meta-author">Michael H.</span>
-            <span className="meta-muted"> &nbsp;|&nbsp; May 02, 2025</span>
+            <span className="meta-author">Raydon M.</span>
+            <span className="meta-muted"> &nbsp;|&nbsp; Dec 9, 2025</span>
           </div>
 
           <h2 className="interviews-title">
-            What African Architecture Teaches Us About Design Thinking.
+            If you don't trust yourself take a job.
           </h2>
 
           <div className="interviews-label">Featured Post</div>
 
-          <div className="play-indicator" />
         </div>
       </section>
 

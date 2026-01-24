@@ -37,7 +37,7 @@ const ChooseCategory = () => {
           <div className="category-card__icon" />
           <h3 className="category-card__title">Interviews</h3>
           <p className="category-card__desc">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+          Candid stories of grit and ingenuity in Africa.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ const ChooseCategory = () => {
           <div className="category-card__icon" />
           <h3 className="category-card__title">Featured CEOs</h3>
           <p className="category-card__desc">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+          Profiles of the visionary leaders we've interviewed.
           </p>
         </div>
 
@@ -61,7 +61,7 @@ const ChooseCategory = () => {
           <div className="category-card__icon" />
           <h3 className="category-card__title">Opportunities</h3>
           <p className="category-card__desc">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+          Connecting you to funding and high impact roles.
           </p>
         </div>
 
@@ -73,7 +73,7 @@ const ChooseCategory = () => {
           <div className="category-card__icon" />
           <h3 className="category-card__title">Technology</h3>
           <p className="category-card__desc">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+            Get technical. A deep dive into technology.
           </p>
         </div>
       </div>

@@ -5043,3 +5043,8 @@ body {
   }
 }
 
+.interviews-image {
+  border-radius: 16px;
+  object-fit: cover;
+}
+
