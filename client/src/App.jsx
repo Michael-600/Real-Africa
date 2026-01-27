@@ -8,7 +8,7 @@ import AboutUsPage from './pages/about-us'
 import MainLayout from './components/Layout/MainLayout';
 import Categories from './pages/categories/opportunities';
 import FeaturedCEOs from './pages/categories/features-ceos';
-import InterviewSelect from './pages/interviews-select';
+import InterviewSelect from './pages/interview-detail';
 import Technology from './pages/categories/technology';
 import { useAuth } from "./lib/authContext";
 import Auth from "./pages/Auth";

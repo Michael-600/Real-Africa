@@ -67,19 +67,32 @@ export default function Interviews() {
         <div className="interviews-container">
           <div className="interviews-bg" />
 
-          <img
-            className="interviews-image"
-            src="/assets/nduati.png"
-            alt="Featured interview"
-          />
+          <a
+            href="https://www.tiktok.com/@therealafricaofficial/video/7578948052275318030?is_from_webapp=1&sender_device=pc&web_id=7524677119550277126"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="interviews-video-link"
+            aria-label="Play interview video on TikTok"
+          >
+            <img
+              className="interviews-image"
+              src="/assets/nduati.png"
+              alt="Featured interview"
+            />
+            <span className="play-button-overlay" aria-hidden="true" />
+          </a>
 
-          <button className="interviews-cta">
+          <a
+            className="interviews-cta"
+            href="https://www.tiktok.com/@therealafricaofficial/video/7578948052275318030?is_from_webapp=1&sender_device=pc&web_id=7524677119550277126"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Go to video
-          </button>
+          </a>
 
           <p className="interviews-description">
-            We explore the link between environment, culture, and scalable innovation
-            through African urban design.
+            Entrepreneurship isn't for everyone, and that's okay
           </p>
 
           <div className="interviews-meta">
