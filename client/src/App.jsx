@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import GetMentoredPage from './pages/get-mentored';
 import InterviewPage from './pages/categories/Interviews'
@@ -24,6 +24,7 @@ import AdminUsers from "../admin/AdminUsers";
 function App() {
   const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
+    const location = useLocation();
 
     if (loading) {
       return (
@@ -34,7 +35,7 @@ function App() {
     }
 
     if (!user) {
-      return <Navigate to="/auth" replace />;
+      return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
     }
 
     return children;
