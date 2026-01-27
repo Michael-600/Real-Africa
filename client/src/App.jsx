@@ -97,7 +97,7 @@ function App() {
           path="/communities/:slug"
           element={<CommunityPage />}
         />        
-          <Route path="/interviews/:id" element={<InterviewSelect />} />
+          <Route path="/interviews/:slug" element={<InterviewSelect />} />
           <Route
             path="/admin"
             element={

@@ -1,80 +1,59 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+import { interviews } from "../data/interviews";
 
 const InterviewSelect = () => {
+  const { slug } = useParams();
+  const interview = interviews.find((item) => item.slug === slug);
+  console.log("slug:", slug);
+  console.log("available slugs:", interviews.map(i => i.slug));
+
+  if (!interview) {
+    return (
+      <main className="interview-page">
+        <h1>Interview not found</h1>
+        <p>The interview you are looking for does not exist.</p>
+      </main>
+    );
+  }
+
   return (
-    <main className="interview-page">
+    <main className="interview-detail">
       {/* Header */}
-      <section className="interview-header">
-        <img
-          className="author-avatar"
-          src="https://placehold.co/48x48"
-          alt="Author"
-        />
-        <div className="author-meta">
-          <h4 className="author-name">Debbie L.</h4>
-          <p className="post-date">Posted on 27th January 2025</p>
+      <header className="interview-header">
+        <div className="interview-header-grid">
+          {/* Left: Author meta */}
+          <div className="interview-meta">
+            <span className="interview-author">{interview.author}</span>
+            <span className="interview-date">Posted on {interview.date}</span>
+          </div>
+
+          {/* Center: Title */}
+          <div className="interview-title-wrap">
+            <h1 className="interview-title">{interview.title}</h1>
+          </div>
+
+          {/* Right: Summary */}
+          <div className="interview-summary-wrap">
+            <p className="interview-summary">{interview.summary}</p>
+          </div>
         </div>
+      </header>
 
-        <h1 className="interview-title">
-          The Story Behind Africa’s First AI-Powered HR Tool
-        </h1>
-      </section>
-
-      {/* Hero Image */}
-      <img
-        className="interview-hero"
-        src="https://placehold.co/870x565"
-        alt="Interview hero"
-      />
+      {/* Contained Hero Image */}
+      <div className="interview-hero">
+        <img src={interview.heroImage} alt={interview.title} />
+      </div>
 
       {/* Article Body */}
       <article className="interview-body">
-        <h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-
-        <h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-
-        <h3>Key Takeaways</h3>
-        <ul>
-          <li>Lorem ipsum dolor sit amet</li>
-          <li>Non blandit massa enim nec scelerisque</li>
-          <li>Neque egestas congue quisque egestas</li>
-        </ul>
-
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </article>
-
-      {/* Watch Next */}
-      <section className="watch-next">
-        <h2>What to watch next</h2>
-
-        <div className="watch-grid">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="watch-card">
-              <img
-                src="https://placehold.co/405x318"
-                alt="Next interview"
-              />
-              <p className="watch-meta">
-                By <span>John Doe</span> · Aug 23, 2021
-              </p>
-              <h3>
-                The Story Behind Africa’s First AI-Powered HR Tool
-              </h3>
-              <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </p>
-            </div>
+        {interview.body
+          .trim()
+          .split("\\n\\n")
+          .map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
           ))}
-        </div>
-      </section>
+      </article>
     </main>
   );
 };

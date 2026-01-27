@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
 if (typeof window !== "undefined") {
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -15,42 +16,49 @@ function FeaturedPosts() {
       date: "August 1, 2025",
       title: "Climate Innovation on a Global Stage: Why Uzoma Bailey Ayogu is a Forbes 30 Under 30 Trailblazer.",
       highlight: true,
+      slug: "climate-innovation-uzoma-ayogu",
     },
     {
       author: "Raydon Muregi",
       date: "Jan 2, 2026",
       title: "From Curiosity to Inclusion: How Elly Savatia is Engineering a More Accessible Africa.",
       highlight: false,
+      slug: "curiosity-to-inclusion-elly-savatia",
     },
     {
       author: "Raydon Muregi",
       date: "December 9, 2025",
       title: "The Art of the Scale: Lessons in Leadership and Resilience from Peter Nduati.",
       highlight: true,
+      slug: "scale-leadership-peter-nduati",
     },
     {
       author: "Anne Mokua",
       date: "Sep 2o, 2025",
       title: "Navigating Borders: How Dr. G. O. Ouma is Using AI to Simplify Global Mobility.",
       highlight: false,
+      slug: "navigating-borders-g-o-ouma",
     },
     {
       author: "Raydon Muregi",
       date: "June 10, 2025",
       title: "You Are a Brand: Nancy Muthoni on the Currencies of Credibility and Excellence.",
       highlight: false,
+      slug: "you-are-a-brand-nancy-muthoni",
     },
     {
       author: "Michael Hayford",
       date: "Dec 19, 2024",
       title: "Data-Driven Success: How Oze is Helping 97% of Small Businesses Thrive Across Africa.",
       highlight: false,
+      slug: "data-driven-success-oze",
     },
     {
       author: "Raydon Muregi",
       date: "May 19, 2024",
       title: "Building with Faith: How Isaac Nyangolo is Using Tech to Heal African Education Systems.",
       highlight: true,
+      slug: "building-with-faith-isaac-nyangolo",
     },
   ];
 
@@ -205,8 +213,9 @@ function FeaturedPosts() {
             }}
           >
             {posts.map((post, i) => (
-              <div
-                key={i}
+              <Link
+                key={post.slug}
+                to={`/interviews/${post.slug}`}
                 className="featured-post-card"
                 style={{
                   padding: "20px 24px",
@@ -239,7 +248,7 @@ function FeaturedPosts() {
                 >
                   {post.title}
                 </h4>
-              </div>
+              </Link>
             ))}
             <div
               aria-hidden
