@@ -5,6 +5,7 @@ import {
   storeReferralAttribution,
   trackReferralConversion,
 } from "../lib/referrals";
+import { supabase } from "../lib/supabase";
 
 import GetMentoredPage from "./get-mentored";
 import Technology from "./categories/technology";
@@ -81,25 +82,58 @@ export default function CommunityPage() {
   const location = useLocation();
   const { user } = useAuth();
   const [hasEntered, setHasEntered] = React.useState(false);
+  const [isJoined, setIsJoined] = React.useState(false);
 
-  const community = COMMUNITY_REGISTRY[slug];
+  const registryEntry = COMMUNITY_REGISTRY[slug];
+  const [community, setCommunity] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
 
-  if (!community) {
-    return (
-      <div className="p-8">
-        <h2 className="text-xl font-semibold">Community not found</h2>
-        <p className="text-zinc-600 mt-2">
-          This community does not exist or is not yet available.
-        </p>
-      </div>
-    );
-  }
+  React.useEffect(() => {
+    let mounted = true;
+    const loadCommunity = async () => {
+      try {
+        setLoading(true);
+        const { data, error: fetchError } = await supabase
+          .from("communities")
+          .select("*")
+          .eq("slug", slug)
+          .maybeSingle();
 
-  const CommunityComponent = community.component;
+        if (fetchError) throw fetchError;
+        if (mounted) setCommunity(data || null);
+      } catch (err) {
+        console.error("Failed to load community:", err);
+        if (mounted) setError("Community details are unavailable.");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
 
-  const joined =
-    JSON.parse(localStorage.getItem("joined_communities") || "[]");
-  const isJoined = joined.includes(community.id);
+    loadCommunity();
+    return () => { mounted = false; };
+  }, [slug]);
+
+  const CommunityComponent = registryEntry?.component || null;
+
+  React.useEffect(() => {
+    if (!user || !community?.id) {
+      setIsJoined(false);
+      return;
+    }
+    let mounted = true;
+    const checkMembership = async () => {
+      const { data } = await supabase
+        .from("community_memberships")
+        .select("id")
+        .eq("community_id", community.id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (mounted) setIsJoined(Boolean(data));
+    };
+    checkMembership();
+    return () => { mounted = false; };
+  }, [user, community?.id]);
 
   React.useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -109,7 +143,28 @@ export default function CommunityPage() {
     }
   }, [location.search, slug]);
 
-  const hasCommunityApp = Boolean(community.component);
+  const hasCommunityApp = Boolean(CommunityComponent);
+
+  if (loading) {
+    return (
+      <div className="community-landing-page">
+        <div style={{ textAlign: "center", padding: "80px 20px", color: "#64748b" }}>
+          Loading community...
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !community) {
+    return (
+      <div className="p-8">
+        <h2 className="text-xl font-semibold">Community not found</h2>
+        <p className="text-zinc-600 mt-2">
+          {error || "This community does not exist or is not yet available."}
+        </p>
+      </div>
+    );
+  }
 
   if (hasEntered && user && isJoined && hasCommunityApp) {
     return <CommunityComponent />;
@@ -118,7 +173,7 @@ export default function CommunityPage() {
   return (
     <div className="community-landing-page">
       <div className="community-landing-hero">
-        <img src={community.image} alt={community.name} />
+        <img src={community.image_url || "/assets/entrepreneurship.jpg"} alt={community.name} />
       </div>
 
       <div className="community-landing-body">
@@ -128,11 +183,13 @@ export default function CommunityPage() {
           <p className="community-landing__description">
             {community.description}
           </p>
-          <p className="community-landing__long">
-            {community.longDescription}
-          </p>
+          {community.long_description && (
+            <p className="community-landing__long">
+              {community.long_description}
+            </p>
+          )}
 
-          {community.highlights?.length > 0 && (
+          {Array.isArray(community.highlights) && community.highlights.length > 0 && (
             <ul className="community-landing__highlights">
               {community.highlights.map((item) => (
                 <li key={item}>{item}</li>
@@ -143,9 +200,9 @@ export default function CommunityPage() {
 
         <div className="community-landing-side">
           <div className="community-landing__meta">
-            <span>{community.members} members</span>
+            <span>{Number(community.members_count || 0).toLocaleString()} members</span>
             <span>•</span>
-            <strong>{community.price}</strong>
+            <strong>{community.price || "Free"}</strong>
           </div>
 
           {!user && (
@@ -163,10 +220,17 @@ export default function CommunityPage() {
             <button
               className="community-landing__cta"
               onClick={async () => {
-                const updated = Array.from(new Set([...joined, community.id]));
-                localStorage.setItem(
-                  "joined_communities",
-                  JSON.stringify(updated)
+                const { error: joinError } = await supabase.from("community_memberships").insert({
+                  community_id: community.id,
+                  user_id: user.id,
+                });
+                if (joinError) {
+                  console.error("Join failed:", joinError);
+                  return;
+                }
+                setIsJoined(true);
+                setCommunity((prev) =>
+                  prev ? { ...prev, members_count: (prev.members_count || 0) + 1 } : prev
                 );
                 await trackReferralConversion("join_community", slug);
               }}
@@ -188,12 +252,18 @@ export default function CommunityPage() {
 
       <div className="community-landing-media">
         <div className="community-landing-video">
-          <iframe
-            src={community.videoUrl}
-            title={`${community.name} intro video`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+          {community.video_url ? (
+            <iframe
+              src={community.video_url}
+              title={`${community.name} intro video`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>
+              Video coming soon.
+            </div>
+          )}
         </div>
       </div>
     </div>
