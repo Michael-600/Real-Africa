@@ -22,8 +22,8 @@ const AboutMission = () => {
             <p className="about-mission__eyebrow">About Us</p>
 
             <h2 className="about-mission__headline">
-              We tell the real stories behind Africa’s booming tech and business
-              scenes.
+            Africa is often portrayed in a light that overlooks its technological & entrepreneurial advancements.
+            The Real Africa seeks to rewrite this narrative by bringing technology in Africa into the global spotlight.
             </h2>
 
             <p className="about-mission__body">

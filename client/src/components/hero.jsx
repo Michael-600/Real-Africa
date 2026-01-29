@@ -70,7 +70,7 @@ function Hero() {
             maxWidth: "100%",
           }}
         >
-          Spotlighting African Tech: Stories of Innovation and Impact
+          Showcasing tech talent and business ingenuity in Africa
         </h1>
 
         {/* Author */}
@@ -82,7 +82,7 @@ function Hero() {
             color: "white",
           }}
         >
-          By <span style={{ color: "#FFD050" }}>Debbie Lalude</span> | May 23, 2025
+          By <span style={{ color: "#FFD050" }}>Raydon Muregi</span> | Jan 23, 2026
         </div>
 
         {/* Description */}
@@ -95,8 +95,7 @@ function Hero() {
             color: "white",
           }}
         >
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-          Excepteur sint occaecat cupidatat non proident.
+          We’re always on the look out for visionary founders, tech leaders and ground-breaking startups to share their journey with our global community of builders and investors. Tell us your story and let’s put your innovation on the map.
         </p>
 
         {/* CTA Button */}

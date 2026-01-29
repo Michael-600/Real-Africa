@@ -40,9 +40,8 @@ export default function AccountMenu({
       .join("")
       .toUpperCase();
 
-  if (!profile) return null;
-
-
+// NOTE: AccountMenu must render for authenticated users even if profile is missing.
+// Profile-dependent fields must always be optional.
   return (
     <div className="account-menu-wrapper" ref={menuRef}>
       {/* Avatar */}
@@ -85,7 +84,7 @@ export default function AccountMenu({
               </span>
             )}
             <p className="account-tier">
-              {currentTier?.name}
+              {currentTier?.name || "Free"}
             </p>
           </div>
           {/*<div
@@ -99,10 +98,10 @@ export default function AccountMenu({
           <div className="account-section">
             <p className="account-label">Current Plan</p>
             <p className="account-plan">
-              {currentTier?.name}
+              {currentTier?.name || "Free"}
             </p>
             <p className="account-price">
-              {currentTier?.price || "—"}
+              {currentTier?.price ?? "—"}
             </p>
           </div>
 

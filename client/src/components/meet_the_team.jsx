@@ -9,8 +9,6 @@ const MeetTheTeam = () => {
       image: "/assets/raydon.jpeg",
       socials: {
         linkedin: "https://www.linkedin.com/",
-        twitter: "https://twitter.com/",
-        instagram: "https://www.instagram.com/"
       }
     },
     {
@@ -19,9 +17,7 @@ const MeetTheTeam = () => {
       featured: true,
       image: "/assets/michael.png",
       socials: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#"
+        linkedin: "https://www.linkedin.com/in/michael-hayford-099711205 ",
       }
     },
     {
@@ -29,9 +25,7 @@ const MeetTheTeam = () => {
       role: "Content Strategy",
       image: "/assets/benedicta.png",
       socials: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#"
+        linkedin: "https://www.linkedin.com/in/drbenedictahayford/",
       }
     },
     {
@@ -39,9 +33,7 @@ const MeetTheTeam = () => {
       role: "Executive Assistant",
       image: "/assets/anne.jpeg",
       socials: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#"
+        linkedin: "https://www.linkedin.com/in/anne-mokua-/",
       }
     },
   ];

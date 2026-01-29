@@ -28,7 +28,13 @@ export default function NextLiveCallCard({
           </p>
 
           {nextLiveCall.speaker && (
-            <div className="speaker-row speaker-highlight mt-3">
+            <div
+              className="speaker-row speaker-highlight mt-3"
+              style={{
+                margin: "0 auto",
+                justifyContent: "center"
+              }}
+            >
               <img
                 src={nextLiveCall.speaker.photo}
                 alt={nextLiveCall.speaker.name}
