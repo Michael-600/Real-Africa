@@ -98,7 +98,7 @@ export default function Travel() {
             price: "from $9,900", 
             nights: "6 weeks", 
             img: "/assets/cape town.png",
-            link: "https://www.ixperience.co/for-university/programs/cape-town/data-science-ai#City-info"
+            link: "https://www.ixperience.co/?grsf=code-kenya-dm0qvb"
           },
           { title: "Nairobi Safari", price: "from $6,200", nights: "8 nights", img: "/assets/nairobi.png" },
           { title: "Accra Bucketlist", price: "from $3,900", nights: "7 nights", img: "/assets/accra.avif" },
