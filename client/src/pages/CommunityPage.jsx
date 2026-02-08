@@ -10,6 +10,42 @@ import { supabase } from "../lib/supabase";
 import GetMentoredPage from "./get-mentored";
 import Technology from "./categories/technology";
 
+// Simple error boundary so a broken community app does not render a blank screen
+class CommunityErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, info) {
+    // Keep this lightweight: log for debugging, but show a friendly fallback UI
+    console.error("Community app crashed:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8">
+          <h2 className="text-xl font-semibold">This community page ran into an error</h2>
+          <p className="text-zinc-600 mt-2">
+            Please refresh the page. If it keeps happening, the community app for this
+            page likely has a bug.
+          </p>
+          <pre className="mt-4 text-xs whitespace-pre-wrap text-zinc-500">
+            {String(this.state.error || "")}
+          </pre>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 /**
  * Community registry
  * Each entry represents a community-backed page
@@ -167,7 +203,11 @@ export default function CommunityPage() {
   }
 
   if (hasEntered && user && isJoined && hasCommunityApp) {
-    return <CommunityComponent />;
+    return (
+      <CommunityErrorBoundary>
+        <CommunityComponent />
+      </CommunityErrorBoundary>
+    );
   }
 
   return (
@@ -232,7 +272,15 @@ export default function CommunityPage() {
                 setCommunity((prev) =>
                   prev ? { ...prev, members_count: (prev.members_count || 0) + 1 } : prev
                 );
-                await trackReferralConversion("join_community", slug);
+
+                try {
+                  await trackReferralConversion("join_community", slug);
+                } catch (err) {
+                  // AbortError is common if navigation/unmount happens during an in-flight request
+                  if (err?.name !== "AbortError") {
+                    console.error("Referral tracking failed:", err);
+                  }
+                }
               }}
             >
               Join community

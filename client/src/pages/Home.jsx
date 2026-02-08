@@ -82,25 +82,17 @@ function Home() {
       <SpecialPost />
       <MeetTheTeam />
       <Testimonials />
-      <NextLiveCallCard
-        nextLiveCall={nextLiveCall}
-        tiers={tiers}
-        hasReservedSeat={hasReservedSeat}
-        canJoinCall={false}
-        onReserveSeat={() => {
-          document
-            .getElementById("seat-selector")
-            ?.scrollIntoView({ behavior: "smooth" });
-        }}
-        onJoinCall={handleJoinCall}
-      />
+      
       <Member
-        hasReservedSeat={hasReservedSeat}
-        onSeatReserved={(seatNumber) => {
-          setHasReservedSeat(true);
-          setReservedSeatNumber(seatNumber);
-        }}
-      />
+  nextLiveCall={nextLiveCall}
+  tiers={tiers}
+  hasReservedSeat={hasReservedSeat}
+  onSeatReserved={(seatNumber) => {
+    setHasReservedSeat(true);
+    setReservedSeatNumber(seatNumber);
+  }}
+  onJoinCall={handleJoinCall}
+/>
       <Footer />
     </div>
   );

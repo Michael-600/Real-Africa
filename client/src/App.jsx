@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import GetMentoredPage from './pages/get-mentored';
@@ -18,6 +18,7 @@ import CommunityPage from './pages/CommunityPage';
 import AdminLayout from "../admin/AdminLayout";
 import AdminDashboard from "../admin/AdminDashboard";
 import AdminUsers from "../admin/AdminUsers";
+import { CoursesPage, CoursePlayerPage } from "./pages/get-mentored";
 
 
 
@@ -67,9 +68,25 @@ function App() {
 
   return (
     <AuthProvider>
-    <BrowserRouter>
-      <MainLayout>
-        <Routes>
+      <BrowserRouter>
+        <MainLayout>
+          <Routes>
+            <Route
+              path="/courses"
+              element={
+                <ProtectedRoute>
+                  <CoursesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/courses/:courseId"
+              element={
+                <ProtectedRoute>
+                  <CoursePlayerPage />
+                </ProtectedRoute>
+              }
+            />
           <Route path="/auth" element={<Auth />} />
           <Route
             path="/"
@@ -109,9 +126,9 @@ function App() {
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
           </Route>
-        </Routes>
-      </MainLayout>
-    </BrowserRouter>
+          </Routes>
+        </MainLayout>
+      </BrowserRouter>
     </AuthProvider>
   );
 }
