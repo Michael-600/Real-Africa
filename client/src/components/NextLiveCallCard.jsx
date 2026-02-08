@@ -11,7 +11,7 @@ export default function NextLiveCallCard({
   return (
     <section>
       <div className={`live-call ${(hasReservedSeat && !canJoinCall) ? "locked" : ""}`}>
-        <div className="space-y-1">
+        <div className="space-y-1 mx-auto max-w-md">
           <p className="text-sm text-zinc-500">Next Live Call</p>
 
           <h2 className="text-xl font-medium">
@@ -28,13 +28,7 @@ export default function NextLiveCallCard({
           </p>
 
           {nextLiveCall.speaker && (
-            <div
-              className="speaker-row speaker-highlight mt-3"
-              style={{
-                margin: "0 auto",
-                justifyContent: "center"
-              }}
-            >
+            <div className="speaker-row speaker-highlight mt-3 mx-auto max-w-md">
               <img
                 src={nextLiveCall.speaker.photo}
                 alt={nextLiveCall.speaker.name}
@@ -87,7 +81,7 @@ export default function NextLiveCallCard({
 
         <button
           disabled={hasReservedSeat && !canJoinCall}
-          className={hasReservedSeat && !canJoinCall ? "disabled" : "enabled"}
+          className={`${hasReservedSeat && !canJoinCall ? "disabled" : "enabled"} mx-auto max-w-md w-full`}
           onClick={() => {
             if (!hasReservedSeat) onReserveSeat();
             else if (canJoinCall) onJoinCall();

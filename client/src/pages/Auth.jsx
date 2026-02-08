@@ -312,7 +312,7 @@ export default function Auth() {
                   "Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kenya","Kuwait",
                   "Latvia","Lebanon","Liberia","Libya","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Mali","Malta",
                   "Mexico","Moldova","Mongolia","Morocco","Mozambique","Namibia","Nepal","Netherlands","New Zealand","Nicaragua",
-                  "Niger","Nigeria","North Korea","Norway","Oman","Pakistan","Panama","Peru","Philippines","Poland","Portugal",
+                  "Niger","Nigeria","North Korea","Norway","Oman","Pakistan","Palestine","Panama","Peru","Philippines","Poland","Portugal",
                   "Qatar","Romania","Rwanda","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia",
                   "Slovenia","Somalia","South Africa","South Korea","Spain","Sri Lanka","Sudan","Sweden","Switzerland","Syria",
                   "Taiwan","Tanzania","Thailand","Togo","Tunisia","Turkey","Uganda","Ukraine","United Arab Emirates","United Kingdom",

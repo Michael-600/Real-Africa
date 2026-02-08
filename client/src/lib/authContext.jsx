@@ -52,24 +52,33 @@ export const AuthProvider = ({ children }) => {
   // Removed duplicate auth initialization logic.
 
   useEffect(() => {
+    let mounted = true;
+
     const init = async () => {
       try {
-        setLoading(true);
+        if (mounted) setLoading(true);
 
         const {
           data: { session },
+          error,
         } = await supabase.auth.getSession();
 
+        if (error) throw error;
+
         const authUser = session?.user ?? null;
-        setUser(authUser);
+        if (mounted) setUser(authUser);
 
         await loadProfile(authUser);
       } catch (err) {
-        console.error("Auth init failed:", err);
+        // Ignore abort-style errors, but still let finally flip loading off
+        if (err?.name !== "AbortError") {
+          console.error("Auth init failed:", err);
+        }
+        if (!mounted) return;
         setUser(null);
         setProfile(null);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
 
@@ -77,13 +86,17 @@ export const AuthProvider = ({ children }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       const authUser = session?.user ?? null;
-      setUser(authUser);
-      await loadProfile(authUser);
+      if (mounted) setUser(authUser);
+      // Fire-and-forget; we don't want to block the auth callback
+      loadProfile(authUser);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {

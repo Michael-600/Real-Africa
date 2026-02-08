@@ -1,19 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 const Footer = () => {
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const lastSubmitRef = useRef(0);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
+
+    const now = Date.now();
+    if (now - lastSubmitRef.current < 30_000) {
+      setErrorMsg("Please wait a moment before trying again.");
+      return;
+    }
+    lastSubmitRef.current = now;
+
+    if (!supabase) {
+      setErrorMsg("Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
+      return;
+    }
+
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      setErrorMsg("Please enter an email address.");
+      return;
+    }
+
     setLoading(true);
 
-    // simulate network delay / email submission
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { error } = await supabase
+        .from("subscriptions")
+        .insert([{ email: trimmedEmail, source: "footer" }])
+        
+
+      // If you have a UNIQUE(email) constraint, duplicate inserts throw 23505.
+      if (error) {
+        if (error.code === "23505") {
+          // Treat as success UX-wise: already subscribed.
+          setSubscribed(true);
+          return;
+        }
+
+        console.error("Newsletter signup error:", error);
+        setErrorMsg("We couldn’t subscribe you right now. Please try again later.");
+        return;
+      }
+
       setSubscribed(true);
-    }, 1200);
+      setEmail("");
+    } catch (err) {
+      setErrorMsg("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,11 +89,14 @@ const Footer = () => {
                 type="email"
                 placeholder="Enter your email"
                 className="footer__input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <button type="submit" className="footer__button">
                 Subscribe
               </button>
+              {errorMsg ? <p className="footer__error">{errorMsg}</p> : null}
             </form>
           ) : loading ? (
             <div className="footer__confirmation">

@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase } from './supabase';
 
 // Sign up a new user
 export async function signUp(email, password, name) {
