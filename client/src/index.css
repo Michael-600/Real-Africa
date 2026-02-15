@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
-
-
 /* Your existing CSS continues below */
 * {
   margin: 0;
@@ -5871,7 +5869,7 @@ body {
 
 
 
-. 
+
 /* =====================================
    GET MENTORED – BRAND COLOR OVERRIDES
    Dark Blue (navbar) + Gold (accent)
@@ -5883,6 +5881,7 @@ body {
   --brand-gold: #facc15; /* gold accent */
   --brand-gold-soft: rgba(250, 204, 21, 0.18);
 }
+
 
 /* Card accents */
 .class-section [style*="radial-gradient"] {
@@ -6296,4 +6295,41 @@ body {
     position: relative;
     height: auto;
   }
+}
+
+.interview-body {
+  max-width: 760px;
+  margin: 3rem auto;
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.interview-body h1,
+.interview-body h2,
+.interview-body h3 {
+  font-family: "Sen", serif;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.interview-body h2 {
+  font-size: 1.75rem;
+}
+
+.interview-body h3 {
+  font-size: 1.3rem;
+}
+
+.interview-body p {
+  margin-bottom: 1.2rem;
+  color: #374151;
+}
+
+.interview-body ul {
+  margin: 1rem 0 1.5rem 1.2rem;
+}
+
+.interview-body li {
+  margin-bottom: 0.5rem;
 }

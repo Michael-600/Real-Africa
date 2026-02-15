@@ -1,6 +1,35 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { interviews } from "../data/interviews";
+import ReactMarkdown from "react-markdown";
+
+class MarkdownErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    // eslint-disable-next-line no-console
+    console.error("Markdown render error:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="interview-body" style={{ whiteSpace: "pre-line" }}>
+          {typeof this.props.fallbackText === "string" ? this.props.fallbackText : ""}
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 const InterviewSelect = () => {
   const { slug } = useParams();
@@ -46,14 +75,13 @@ const InterviewSelect = () => {
       </div>
 
       {/* Article Body */}
-      <article className="interview-body">
-        {interview.body
-          .trim()
-          .split("\\n\\n")
-          .map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
-      </article>
+      <MarkdownErrorBoundary fallbackText={interview.body}>
+        <article className="interview-body">
+          <ReactMarkdown>
+            {typeof interview.body === "string" ? interview.body : ""}
+          </ReactMarkdown>
+        </article>
+      </MarkdownErrorBoundary>
     </main>
   );
 };
