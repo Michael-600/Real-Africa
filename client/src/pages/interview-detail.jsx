@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { interviews } from "../data/interviews";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 class MarkdownErrorBoundary extends React.Component {
   constructor(props) {
@@ -34,8 +35,6 @@ class MarkdownErrorBoundary extends React.Component {
 const InterviewSelect = () => {
   const { slug } = useParams();
   const interview = interviews.find((item) => item.slug === slug);
-  console.log("slug:", slug);
-  console.log("available slugs:", interviews.map(i => i.slug));
 
   if (!interview) {
     return (
@@ -77,7 +76,19 @@ const InterviewSelect = () => {
       {/* Article Body */}
       <MarkdownErrorBoundary fallbackText={interview.body}>
         <article className="interview-body">
-          <ReactMarkdown>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h1: ({ children }) => <h1>{children}</h1>,
+              h2: ({ children }) => <h2>{children}</h2>,
+              h3: ({ children }) => <h3>{children}</h3>,
+              p: ({ children }) => <p>{children}</p>,
+              ul: ({ children }) => <ul>{children}</ul>,
+              ol: ({ children }) => <ol>{children}</ol>,
+              li: ({ children }) => <li>{children}</li>,
+              br: () => <br />,
+            }}
+          >
             {typeof interview.body === "string" ? interview.body : ""}
           </ReactMarkdown>
         </article>
