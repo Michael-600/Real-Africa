@@ -124,6 +124,8 @@ export default function CommunityPage() {
   const [community, setCommunity] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [joinLoading, setJoinLoading] = React.useState(false);
+  const [joinSuccess, setJoinSuccess] = React.useState(false);
 
   React.useEffect(() => {
     let mounted = true;
@@ -205,7 +207,7 @@ export default function CommunityPage() {
   if (hasEntered && user && isJoined && hasCommunityApp) {
     return (
       <CommunityErrorBoundary>
-        <CommunityComponent />
+        <CommunityComponent skipMembershipCheck={true} communitySlug={slug} />
       </CommunityErrorBoundary>
     );
   }
@@ -256,34 +258,64 @@ export default function CommunityPage() {
             </button>
           )}
 
+          {joinSuccess && (
+            <p
+              className="community-landing__success"
+              style={{ color: "#16a34a", fontWeight: 600, marginBottom: 8 }}
+              role="status"
+            >
+              You've joined successfully!
+            </p>
+          )}
           {user && !isJoined && (
             <button
               className="community-landing__cta"
-              onClick={async () => {
-                const { error: joinError } = await supabase.from("community_memberships").insert({
-                  community_id: community.id,
-                  user_id: user.id,
-                });
+              disabled={joinLoading}
+              onClick={async (e) => {
+                e.preventDefault();
+                setJoinLoading(true);
+                setJoinSuccess(false);
+                console.log("[Join] Click -> firing insert", { communityId: community.id, userId: user.id });
+                const { data, error: joinError } = await supabase
+                  .from("community_memberships")
+                  .insert({
+                    community_id: community.id,
+                    user_id: user.id,
+                  })
+                  .select();
                 if (joinError) {
-                  console.error("Join failed:", joinError);
+                  setJoinLoading(false);
+                  if (joinError.code === "23505") {
+                    console.log("[Join] Already a member (duplicate), treating as success");
+                    setIsJoined(true);
+                    setJoinSuccess(true);
+                    return;
+                  }
+                  console.error("[Join] Supabase error:", joinError);
                   return;
                 }
+                console.log("[Join] Success:", data);
                 setIsJoined(true);
-                setCommunity((prev) =>
-                  prev ? { ...prev, members_count: (prev.members_count || 0) + 1 } : prev
-                );
-
+                setJoinSuccess(true);
+                const newCount = (community.members_count || 0) + 1;
+                setCommunity((prev) => (prev ? { ...prev, members_count: newCount } : prev));
+                const { error: updateErr } = await supabase
+                  .from("communities")
+                  .update({ members_count: newCount })
+                  .eq("id", community.id);
+                if (updateErr) console.error("[Join] Failed to update members_count:", updateErr);
+                setJoinLoading(false);
+                setTimeout(() => setJoinSuccess(false), 4000);
                 try {
                   await trackReferralConversion("join_community", slug);
                 } catch (err) {
-                  // AbortError is common if navigation/unmount happens during an in-flight request
                   if (err?.name !== "AbortError") {
                     console.error("Referral tracking failed:", err);
                   }
                 }
               }}
             >
-              Join community
+              {joinLoading ? "Joining…" : "Join community"}
             </button>
           )}
 
