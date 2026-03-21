@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
-
 export default function Communities() {
     const [communities, setCommunities] = useState([]);
     const [loading, setLoading] = useState(true);

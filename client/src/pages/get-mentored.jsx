@@ -707,45 +707,60 @@ export function CoursePlayerPage() {
 // -----------------------------
 // PAGE
 // -----------------------------
-export default function GetMentoredPage() {
-  // -----------------------------
-  // ALL HOOKS FIRST
-  // -----------------------------
+export default function GetMentoredPage(props = {}) {
+  const { skipMembershipCheck = false } = props;
   const navigate = useNavigate();
-  // Remove hasMockCommunity state and effect.
-
-  const { profile, loading } = useAuth();
-
-
-  // Prevent duplicate guard logic runs (React Strict Mode can double-run effects in dev)
+  const { user, profile, loading } = useAuth();
   const authResolvedOnce = useRef(false);
-
-  // TEMPORARY community membership check
-  // Replace this with real membership data when available
-  let joined = [];
-  try {
-    joined = JSON.parse(localStorage.getItem("joined_communities") || "[]");
-    if (!Array.isArray(joined)) joined = [];
-  } catch (e) {
-    joined = [];
-  }
-
-  const isInCommunity =
-    joined.length > 0 ||
-    (profile?.communities && profile.communities.length > 0);
-
-  // Enforce: must be in a community before accessing mentorship
+  const [membershipChecked, setMembershipChecked] = useState(false);
+  const [isInCommunity, setIsInCommunity] = useState(skipMembershipCheck);
 
   useEffect(() => {
-    if (loading) return;
-    if (!profile) return;
-    if (authResolvedOnce.current) return;
+    if (skipMembershipCheck) {
+      setIsInCommunity(true);
+      setMembershipChecked(true);
+      return;
+    }
+    if (!user?.id || loading) return;
 
+    let mounted = true;
+    (async () => {
+      try {
+        const { data: comm } = await supabase
+          .from("communities")
+          .select("id")
+          .eq("slug", "get-mentored")
+          .maybeSingle();
+        if (!mounted || !comm?.id) {
+          if (mounted) setMembershipChecked(true);
+          return;
+        }
+        const { data: membership } = await supabase
+          .from("community_memberships")
+          .select("id")
+          .eq("community_id", comm.id)
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (mounted) {
+          setIsInCommunity(Boolean(membership));
+          setMembershipChecked(true);
+        }
+      } catch (err) {
+        console.error("[GetMentored] Membership check failed:", err);
+        if (mounted) setMembershipChecked(true);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [user?.id, loading, skipMembershipCheck]);
+
+  useEffect(() => {
+    if (loading || !profile || authResolvedOnce.current || skipMembershipCheck) return;
+    if (!membershipChecked) return;
     if (!isInCommunity) {
       authResolvedOnce.current = true;
       navigate("/communities", { state: { from: "mentored" } });
     }
-  }, [loading, profile, isInCommunity, navigate]);
+  }, [loading, profile, isInCommunity, membershipChecked, skipMembershipCheck, navigate]);
 
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
@@ -840,11 +855,15 @@ export default function GetMentoredPage() {
     );
   }
 
+  if (!skipMembershipCheck && !membershipChecked) {
+    return <div className="p-8 text-zinc-500">Checking community membership…</div>;
+  }
+
   if (coursesLoading) {
     return <div className="p-8 text-zinc-500">Loading courses…</div>;
   }
 
-  if (!loading && profile && !isInCommunity) {
+  if (!isInCommunity) {
     return (
       <div className="mentorship-gate">
         <div className="mentorship-gate-card">

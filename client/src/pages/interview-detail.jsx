@@ -1,12 +1,40 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { interviews } from "../data/interviews";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+class MarkdownErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    // eslint-disable-next-line no-console
+    console.error("Markdown render error:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="interview-body" style={{ whiteSpace: "pre-line" }}>
+          {typeof this.props.fallbackText === "string" ? this.props.fallbackText : ""}
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 const InterviewSelect = () => {
   const { slug } = useParams();
   const interview = interviews.find((item) => item.slug === slug);
-  console.log("slug:", slug);
-  console.log("available slugs:", interviews.map(i => i.slug));
 
   if (!interview) {
     return (
@@ -46,14 +74,25 @@ const InterviewSelect = () => {
       </div>
 
       {/* Article Body */}
-      <article className="interview-body">
-        {interview.body
-          .trim()
-          .split("\\n\\n")
-          .map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
-      </article>
+      <MarkdownErrorBoundary fallbackText={interview.body}>
+        <article className="interview-body">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h1: ({ children }) => <h1>{children}</h1>,
+              h2: ({ children }) => <h2>{children}</h2>,
+              h3: ({ children }) => <h3>{children}</h3>,
+              p: ({ children }) => <p>{children}</p>,
+              ul: ({ children }) => <ul>{children}</ul>,
+              ol: ({ children }) => <ol>{children}</ol>,
+              li: ({ children }) => <li>{children}</li>,
+              br: () => <br />,
+            }}
+          >
+            {typeof interview.body === "string" ? interview.body : ""}
+          </ReactMarkdown>
+        </article>
+      </MarkdownErrorBoundary>
     </main>
   );
 };
