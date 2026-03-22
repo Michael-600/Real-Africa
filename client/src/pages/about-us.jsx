@@ -21,8 +21,9 @@ export default function AboutUs() {
 
             <div className="about-hero-right">
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                We spotlight founders, creatives, and innovators who are
+                building the future from African soil — sharing their journeys,
+                lessons, and the systems that drive real progress.
               </p>
             </div>
           </div>
@@ -70,14 +71,14 @@ export default function AboutUs() {
           <div className="about-creatives-text">
             <h2>Our team of creatives</h2>
             <h3>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt.
+              Writers, producers, and strategists passionate about amplifying
+              Africa's untold stories.
             </h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-              ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat.
+              From in-depth interviews with founders to on-the-ground travel
+              coverage, our team combines journalism, technology, and local
+              expertise to create content that informs, inspires, and connects
+              communities across the continent and beyond.
             </p>
           </div>
 
@@ -92,15 +93,16 @@ export default function AboutUs() {
       <section className="about-why container centered">
         <h2>Why we started this company</h2>
         <h3>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt.
+          Africa's growth story is often told by outsiders. We wanted to change
+          that.
         </h3>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-          veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-          commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-          velit esse cillum dolore eu fugiat.
+          We noticed a gap between the incredible work happening across African
+          tech and business ecosystems and the stories being told about them.
+          The Real Africa was built to bridge that gap — to give founders,
+          innovators, and communities a platform that celebrates progress,
+          shares actionable knowledge, and connects people who are building
+          the future together.
         </p>
       </section>
 

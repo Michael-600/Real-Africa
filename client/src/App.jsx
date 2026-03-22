@@ -12,7 +12,8 @@ import InterviewSelect from './pages/interview-detail';
 import Technology from './pages/categories/technology';
 import { useAuth } from "./lib/authContext";
 import Auth from "./pages/Auth";
-import { AuthProvider } from "./lib/authContext"
+import ResetPassword from "./pages/ResetPassword";
+import LoadingSpinner from "./components/LoadingSpinner";
 import Communities from './pages/communities'
 import CommunityPage from './pages/CommunityPage';
 import AdminLayout from "../admin/AdminLayout";
@@ -28,11 +29,7 @@ function App() {
     const location = useLocation();
 
     if (loading) {
-      return (
-        <div className="flex items-center justify-center min-h-screen">
-          <p className="text-zinc-500">Loading…</p>
-        </div>
-      );
+      return <LoadingSpinner message="Checking access..." />;
     }
 
     if (!user) {
@@ -44,15 +41,8 @@ function App() {
 
   const AdminRoute = ({ children }) => {
     const { user, profile, loading } = useAuth();
-    console.log("AUTH PROFILE:", profile);
-    console.log("USER:", user);
-    console.log("PROFILE:", profile);
     if (loading && !user) {
-      return (
-        <div className="flex items-center justify-center min-h-screen">
-          <p className="text-zinc-500">Loading…</p>
-        </div>
-      );
+      return <LoadingSpinner message="Checking access..." />;
     }
 
     if (!user) {
@@ -67,7 +57,6 @@ function App() {
   };
 
   return (
-    <AuthProvider>
       <BrowserRouter>
         <MainLayout>
           <Routes>
@@ -88,6 +77,7 @@ function App() {
               }
             />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route
             path="/"
             element={
@@ -129,7 +119,6 @@ function App() {
           </Routes>
         </MainLayout>
       </BrowserRouter>
-    </AuthProvider>
   );
 }
 

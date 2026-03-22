@@ -173,8 +173,8 @@ function FeaturedPosts() {
               Peter Nduati talks about the harsh realities of the day to day entrepreneur.
             </p>
 
-            <a
-              href="http://localhost:5173/interviews"
+            <Link
+              to="/interviews"
               style={{ textDecoration: "none", alignSelf: "flex-start", width: "100%", maxWidth: 280 }}
             >
               <button
@@ -194,7 +194,7 @@ function FeaturedPosts() {
               >
                 Read More &gt;
               </button>
-            </a>
+            </Link>
           </div>
 
           {/* List */}

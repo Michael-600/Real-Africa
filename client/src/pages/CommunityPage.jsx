@@ -9,6 +9,7 @@ import { supabase } from "../lib/supabase";
 
 import GetMentoredPage from "./get-mentored";
 import Technology from "./categories/technology";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 // Simple error boundary so a broken community app does not render a blank screen
 class CommunityErrorBoundary extends React.Component {
@@ -79,7 +80,7 @@ const COMMUNITY_REGISTRY = {
       "Product engineering deep-dives, code walkthroughs, and community Q&A to help you ship faster and smarter.",
     members: 82,
     price: "Free",
-    image: "/assets/entrepreneurship.jpg",
+    image: "/assets/technology-community.png",
     videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ",
     highlights: [
       "Hands-on project breakdowns",
@@ -96,8 +97,8 @@ const COMMUNITY_REGISTRY = {
     longDescription:
       "Workshops, feedback circles, and collaborations to help you release consistently and grow your audience.",
     members: 56,
-    price: "Free",
-    image: "/assets/entrepreneurship.jpg",
+    price: "$20/month",
+    image: "/assets/music-community.png",
     videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ",
     highlights: [
       "Weekly feedback sessions",
@@ -134,12 +135,21 @@ export default function CommunityPage() {
         setLoading(true);
         const { data, error: fetchError } = await supabase
           .from("communities")
-          .select("*")
+          .select("*, community_memberships(count)")
           .eq("slug", slug)
           .maybeSingle();
 
         if (fetchError) throw fetchError;
-        if (mounted) setCommunity(data || null);
+        if (mounted && data) {
+          const liveCount = data.community_memberships?.[0]?.count;
+          setCommunity({
+            ...data,
+            members_count:
+              typeof liveCount === "number" ? liveCount : data.members_count ?? 0,
+          });
+        } else if (mounted) {
+          setCommunity(null);
+        }
       } catch (err) {
         console.error("Failed to load community:", err);
         if (mounted) setError("Community details are unavailable.");
@@ -184,13 +194,7 @@ export default function CommunityPage() {
   const hasCommunityApp = Boolean(CommunityComponent);
 
   if (loading) {
-    return (
-      <div className="community-landing-page">
-        <div style={{ textAlign: "center", padding: "80px 20px", color: "#64748b" }}>
-          Loading community...
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading community..." />;
   }
 
   if (error || !community) {
@@ -275,7 +279,6 @@ export default function CommunityPage() {
                 e.preventDefault();
                 setJoinLoading(true);
                 setJoinSuccess(false);
-                console.log("[Join] Click -> firing insert", { communityId: community.id, userId: user.id });
                 const { data, error: joinError } = await supabase
                   .from("community_memberships")
                   .insert({
@@ -286,7 +289,6 @@ export default function CommunityPage() {
                 if (joinError) {
                   setJoinLoading(false);
                   if (joinError.code === "23505") {
-                    console.log("[Join] Already a member (duplicate), treating as success");
                     setIsJoined(true);
                     setJoinSuccess(true);
                     return;
@@ -294,16 +296,11 @@ export default function CommunityPage() {
                   console.error("[Join] Supabase error:", joinError);
                   return;
                 }
-                console.log("[Join] Success:", data);
                 setIsJoined(true);
                 setJoinSuccess(true);
-                const newCount = (community.members_count || 0) + 1;
-                setCommunity((prev) => (prev ? { ...prev, members_count: newCount } : prev));
-                const { error: updateErr } = await supabase
-                  .from("communities")
-                  .update({ members_count: newCount })
-                  .eq("id", community.id);
-                if (updateErr) console.error("[Join] Failed to update members_count:", updateErr);
+                setCommunity((prev) =>
+                  prev ? { ...prev, members_count: (prev.members_count || 0) + 1 } : prev
+                );
                 setJoinLoading(false);
                 setTimeout(() => setJoinSuccess(false), 4000);
                 try {

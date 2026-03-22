@@ -1,71 +1,91 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../lib/authContext";
+import {
+  Palette, Music, DollarSign, Sparkles, Monitor,
+  Carrot, Trophy, BookOpen, Heart, Search
+} from "lucide-react";
+
+const CATEGORIES = [
+  { label: "All", icon: null },
+  { label: "Hobbies", icon: Palette, color: "#8b5cf6" },
+  { label: "Music", icon: Music, color: "#ec4899" },
+  { label: "Money", icon: DollarSign, color: "#f59e0b" },
+  { label: "Spirituality", icon: Sparkles, color: "#6366f1" },
+  { label: "Tech", icon: Monitor, color: "#3b82f6" },
+  { label: "Health", icon: Carrot, color: "#22c55e" },
+  { label: "Sports", icon: Trophy, color: "#f97316" },
+  { label: "Self-improvement", icon: BookOpen, color: "#0ea5e9" },
+  { label: "Relationships", icon: Heart, color: "#ef4444" },
+];
 
 export default function Communities() {
     const [communities, setCommunities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const formatMembers = (count) =>
-      Number.isFinite(count) && count > 0 ? count.toLocaleString() : "—";
+    const [showWaitlist, setShowWaitlist] = useState(false);
+    const [waitlistForm, setWaitlistForm] = useState({ name: "", email: "", country: "", community_idea: "" });
+    const [waitlistLoading, setWaitlistLoading] = useState(false);
+    const [waitlistSuccess, setWaitlistSuccess] = useState(false);
+    const [waitlistError, setWaitlistError] = useState("");
+    const { user, profile } = useAuth();
+    const formatMembers = (count) => {
+      const n = Number(count);
+      return Number.isFinite(n) && n >= 0 ? n.toLocaleString() : "0";
+    };
     const navigate = useNavigate();
+
+    const handleWaitlistSubmit = async () => {
+      setWaitlistError("");
+      if (!waitlistForm.name || !waitlistForm.email || !waitlistForm.country) {
+        setWaitlistError("Name, email, and country are required.");
+        return;
+      }
+      setWaitlistLoading(true);
+      const { error: insertError } = await supabase
+        .from("community_waitlist_requests")
+        .insert({
+          full_name: waitlistForm.name,
+          email: waitlistForm.email,
+          country: waitlistForm.country,
+          community_idea: waitlistForm.community_idea || null,
+          user_id: user?.id || null,
+        });
+      if (insertError) {
+        console.error("Waitlist insert error:", insertError);
+        setWaitlistError("Something went wrong. Please try again.");
+      } else {
+        setWaitlistSuccess(true);
+      }
+      setWaitlistLoading(false);
+    };
 
     useEffect(() => {
       let mounted = true;
-      const diagnoseCommunitiesFetch = async () => {
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-        if (!supabaseUrl || !supabaseAnonKey) {
-          return "Supabase env vars missing. Check `client/.env`.";
-        }
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-        try {
-          const response = await fetch(
-            `${supabaseUrl}/rest/v1/communities?select=id&limit=1`,
-            {
-              headers: {
-                apikey: supabaseAnonKey,
-                Authorization: `Bearer ${supabaseAnonKey}`,
-              },
-              signal: controller.signal,
-            }
-          );
-
-          if (!response.ok) {
-            return `Supabase REST returned ${response.status}. Check RLS policies for public reads on communities.`;
-          }
-
-          return null;
-        } catch (err) {
-          if (err?.name === "AbortError") {
-            return "Supabase REST request timed out. Check network or blockers.";
-          }
-          return "Supabase REST request failed. Check network or project URL.";
-        } finally {
-          clearTimeout(timeoutId);
-        }
-      };
-
       const loadCommunities = async () => {
         try {
           setLoading(true);
           const { data, error: fetchError } = await supabase
             .from("communities")
-            .select("*")
+            .select("*, community_memberships(count)")
             .order("created_at", { ascending: true });
 
           if (fetchError) throw fetchError;
-          if (mounted) setCommunities(data || []);
+
+          const withCounts = (data || []).map((c) => {
+            const liveCount = c.community_memberships?.[0]?.count;
+            return {
+              ...c,
+              members_count:
+                typeof liveCount === "number" ? liveCount : c.members_count ?? 0,
+            };
+          });
+
+          if (mounted) setCommunities(withCounts);
         } catch (err) {
           console.error("Failed to load communities:", err);
-          const diagnostic = await diagnoseCommunitiesFetch();
-          if (mounted) {
-            setError(diagnostic || "Unable to load communities right now.");
-          }
+          if (mounted) setError("Unable to load communities right now.");
         } finally {
           if (mounted) setLoading(false);
         }
@@ -89,7 +109,7 @@ export default function Communities() {
           
   
           <div className="search-wrapper">
-            <span className="search-icon">🔍</span>
+            <Search size={18} strokeWidth={2} style={{ color: "#9ca3af", flexShrink: 0 }} />
             <input
               type="text"
               placeholder="Search for anything"
@@ -99,33 +119,33 @@ export default function Communities() {
   
         {/* Categories */}
         <section className="categories">
-          {[
-            "All",
-            "🎨 Hobbies",
-            "🎸 Music",
-            "💰 Money",
-            "🙏 Spirituality",
-            "💻 Tech",
-            "🥕 Health",
-            "⚽ Sports",
-            "📚 Self-improvement",
-            "❤️ Relationships",
-          ].map((c, i) => (
-            <button
-              key={c}
-              className={`pill ${i === 0 ? "active" : ""}`}
-            >
-              {c}
-            </button>
-          ))}
+          {CATEGORIES.map((cat, i) => {
+            const Icon = cat.icon;
+            return (
+              <button
+                key={cat.label}
+                className={`pill ${i === 0 ? "active" : ""}`}
+              >
+                {Icon && <Icon size={15} strokeWidth={2.2} style={{ color: cat.color }} />}
+                {cat.label}
+              </button>
+            );
+          })}
         </section>
   
         {/* Grid */}
         <section className="grid-wrap">
           {loading && (
-            <p style={{ textAlign: "center", color: "#64748b" }}>
-              Loading communities...
-            </p>
+            <div style={{ display: "flex", justifyContent: "center", padding: "40px 0" }}>
+              <div style={{
+                width: 32, height: 32,
+                border: "3px solid #e5e7eb",
+                borderTopColor: "#111827",
+                borderRadius: "50%",
+                animation: "spin 0.7s linear infinite",
+              }} />
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
           )}
           {error && (
             <p style={{ textAlign: "center", color: "#b91c1c" }}>
@@ -194,11 +214,101 @@ export default function Communities() {
           <p>Request access to launch a community with The Real Africa.</p>
           <button
             className="community-waitlist-btn"
-            onClick={() => alert("Waitlist request coming soon.")}
+            onClick={() => {
+              setShowWaitlist(true);
+              setWaitlistSuccess(false);
+              setWaitlistError("");
+              if (user && profile) {
+                setWaitlistForm((f) => ({
+                  ...f,
+                  name: profile.full_name || "",
+                  email: user.email || "",
+                }));
+              }
+            }}
           >
             Request to join the waitlist
           </button>
         </section>
+
+        {showWaitlist && (
+          <div className="waitlist-overlay" onClick={() => setShowWaitlist(false)}>
+            <div className="waitlist-dialog" onClick={(e) => e.stopPropagation()}>
+              {waitlistSuccess ? (
+                <>
+                  <h3>You're on the list!</h3>
+                  <p style={{ margin: "16px 0", fontSize: 14, color: "#4b5563" }}>
+                    We'll reach out when spots open. Thank you for your interest.
+                  </p>
+                  <button className="waitlist-submit-btn" onClick={() => setShowWaitlist(false)}>
+                    Close
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h3>Join the Waitlist</h3>
+                  <p style={{ margin: "8px 0 20px", fontSize: 14, color: "#6b7280" }}>
+                    Tell us about the community you'd like to create.
+                  </p>
+                  {waitlistError && (
+                    <p style={{ color: "#b91c1c", fontSize: 13, marginBottom: 12 }}>{waitlistError}</p>
+                  )}
+                  <input
+                    className="waitlist-input"
+                    placeholder="Your full name"
+                    value={waitlistForm.name}
+                    onChange={(e) => setWaitlistForm({ ...waitlistForm, name: e.target.value })}
+                  />
+                  <input
+                    className="waitlist-input"
+                    placeholder="Email address"
+                    type="email"
+                    value={waitlistForm.email}
+                    onChange={(e) => setWaitlistForm({ ...waitlistForm, email: e.target.value })}
+                  />
+                  <select
+                    className="waitlist-input"
+                    value={waitlistForm.country}
+                    onChange={(e) => setWaitlistForm({ ...waitlistForm, country: e.target.value })}
+                  >
+                    <option value="">Select your country</option>
+                    {[
+                      "Algeria","Angola","Argentina","Australia","Austria","Bangladesh","Belgium","Benin","Botswana","Brazil",
+                      "Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Chile","China","Colombia","Congo (DRC)","Costa Rica",
+                      "Croatia","Czech Republic","Denmark","Dominican Republic","Ecuador","Egypt","Estonia","Ethiopia","Finland",
+                      "France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Guatemala","Haiti","Honduras","Hungary",
+                      "Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kenya",
+                      "Kuwait","Latvia","Lebanon","Liberia","Libya","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia",
+                      "Mali","Malta","Mexico","Moldova","Mongolia","Morocco","Mozambique","Namibia","Nepal","Netherlands",
+                      "New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Peru",
+                      "Philippines","Poland","Portugal","Qatar","Romania","Rwanda","Saudi Arabia","Senegal","Serbia","Seychelles",
+                      "Sierra Leone","Singapore","Slovakia","Slovenia","Somalia","South Africa","South Korea","Spain","Sri Lanka",
+                      "Sudan","Sweden","Switzerland","Syria","Taiwan","Tanzania","Thailand","Togo","Tunisia","Turkey","Uganda",
+                      "Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Venezuela","Vietnam","Yemen",
+                      "Zambia","Zimbabwe"
+                    ].map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                  <textarea
+                    className="waitlist-input"
+                    placeholder="Describe your community idea (optional)"
+                    rows={3}
+                    value={waitlistForm.community_idea}
+                    onChange={(e) => setWaitlistForm({ ...waitlistForm, community_idea: e.target.value })}
+                  />
+                  <button
+                    className="waitlist-submit-btn"
+                    onClick={handleWaitlistSubmit}
+                    disabled={waitlistLoading}
+                  >
+                    {waitlistLoading ? "Submitting..." : "Submit Request"}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         <style>{`
           .join-community-btn {
@@ -264,6 +374,74 @@ export default function Communities() {
           .community-waitlist-btn:hover {
             background: #111827;
             color: #ffffff;
+          }
+
+          .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+          }
+
+          .waitlist-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+          }
+
+          .waitlist-dialog {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 440px;
+            width: 90%;
+            text-align: left;
+          }
+
+          .waitlist-dialog h3 {
+            font-size: 20px;
+            font-weight: 700;
+          }
+
+          .waitlist-input {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            font-size: 14px;
+            margin-bottom: 12px;
+            font-family: inherit;
+            resize: vertical;
+          }
+
+          .waitlist-input:focus {
+            outline: none;
+            border-color: #111827;
+          }
+
+          .waitlist-submit-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: #111827;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 4px;
+          }
+
+          .waitlist-submit-btn:hover {
+            background: #000;
+          }
+
+          .waitlist-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
           }
         `}</style>
       </div>

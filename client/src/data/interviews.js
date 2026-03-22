@@ -213,6 +213,62 @@ In this interview, a Pan-African CTO discusses remote leadership, cross-border h
 The insights are invaluable for companies thinking beyond single-market expansion.
     `,
   },
+  {
+    slug: "navigating-borders-g-o-ouma",
+    title: "Navigating Borders: How Dr. G. O. Ouma is Using AI to Simplify Global Mobility",
+    author: "Anne Mokua",
+    date: "September 20, 2025",
+    heroImage: "/assets/hero_image.jpeg",
+    summary:
+      "Dr. G. O. Ouma shares how AI-driven tools are removing friction from cross-border mobility for Africans.",
+    body: `
+This article is coming soon. Stay tuned for the full interview.
+
+Dr. G. O. Ouma is pioneering the use of artificial intelligence to simplify global mobility, making cross-border travel, work, and compliance more accessible for Africans navigating an increasingly connected world.
+    `,
+  },
+  {
+    slug: "you-are-a-brand-nancy-muthoni",
+    title: "You Are a Brand: Nancy Muthoni on the Currencies of Credibility and Excellence",
+    author: "Raydon Muregi",
+    date: "June 10, 2025",
+    heroImage: "/assets/hero_image.jpeg",
+    summary:
+      "Nancy Muthoni breaks down personal branding and what it takes to stand out in Africa's competitive professional landscape.",
+    body: `
+This article is coming soon. Stay tuned for the full interview.
+
+Nancy Muthoni discusses how professionals can build lasting credibility, the importance of consistency, and why your personal brand is your most valuable career asset.
+    `,
+  },
+  {
+    slug: "data-driven-success-oze",
+    title: "Data-Driven Success: How Oze is Helping 97% of Small Businesses Thrive Across Africa",
+    author: "Michael Hayford",
+    date: "December 19, 2024",
+    heroImage: "/assets/hero_image.jpeg",
+    summary:
+      "Oze is transforming small business management across Africa with data-driven tools and insights.",
+    body: `
+This article is coming soon. Stay tuned for the full interview.
+
+The Oze team shares their mission to empower small businesses with digital tools that drive financial clarity, productivity, and sustainable growth across the continent.
+    `,
+  },
+  {
+    slug: "building-with-faith-isaac-nyangolo",
+    title: "Building with Faith: How Isaac Nyangolo is Using Tech to Heal African Education Systems",
+    author: "Raydon Muregi",
+    date: "May 19, 2024",
+    heroImage: "/assets/isaac-nyangolo.png",
+    summary:
+      "Isaac Nyangolo shares his journey of using technology to address systemic challenges in African education.",
+    body: `
+This article is coming soon. Stay tuned for the full interview.
+
+Isaac Nyangolo discusses the intersection of faith, technology, and education reform, sharing his vision for scalable solutions that can transform learning outcomes across the continent.
+    `,
+  },
 ];
 
 // Support both named and default imports

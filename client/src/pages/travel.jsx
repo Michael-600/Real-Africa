@@ -1,8 +1,6 @@
 import React from 'react'
 import { useState } from "react";
-
-
-
+import { supabase } from "../lib/supabase";
 import Footer from "../components/footer";
 import CustomTripModal from "../components/CustomTripModal";
 

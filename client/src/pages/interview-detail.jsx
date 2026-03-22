@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { interviews } from "../data/interviews";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -38,9 +38,37 @@ const InterviewSelect = () => {
 
   if (!interview) {
     return (
-      <main className="interview-page">
-        <h1>Interview not found</h1>
-        <p>The interview you are looking for does not exist.</p>
+      <main
+        style={{
+          minHeight: "60vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          padding: "40px 20px",
+        }}
+      >
+        <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>
+          Interview not found
+        </h1>
+        <p style={{ fontSize: 16, color: "#6b7280", marginBottom: 24, maxWidth: 440 }}>
+          The interview you're looking for doesn't exist or may have been moved.
+        </p>
+        <Link
+          to="/interviews"
+          style={{
+            padding: "12px 28px",
+            borderRadius: 10,
+            background: "#111827",
+            color: "#fff",
+            textDecoration: "none",
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          Browse all interviews
+        </Link>
       </main>
     );
   }

@@ -10,28 +10,6 @@ const Navbar = ({ onGetFeatured }) => {
   const location = useLocation();
   const { user, profile } = useAuth();
 
-  useEffect(() => {
-    const indicator = document.querySelector(".scroll-indicator");
-  
-    const onWheel = (e) => {
-      // Only trigger if user scrolls UP at the top
-      if (window.scrollY === 0 && e.deltaY < 0) {
-        indicator?.classList.add("visible");
-  
-        // auto-hide after a moment
-        clearTimeout(window.__scrollHintTimeout);
-        window.__scrollHintTimeout = setTimeout(() => {
-          indicator?.classList.remove("visible");
-        }, 1200);
-      }
-    };
-  
-    window.addEventListener("wheel", onWheel, { passive: true });
-  
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-    };
-  }, []);
   
   return (
     <>
@@ -47,8 +25,8 @@ const Navbar = ({ onGetFeatured }) => {
           box-sizing: border-box;
         }
         .navbar {
-          height: 88px;
-          padding: 0 16px;
+          height: 72px;
+          padding: 0 24px;
           background: linear-gradient(90deg, #1f2230 0%, #232536 100%);
           display: flex;
           align-items: center;
@@ -60,17 +38,38 @@ const Navbar = ({ onGetFeatured }) => {
           overflow: visible;
         }
 
+        .navbar__logo {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          text-decoration: none;
+          flex-shrink: 0;
+        }
+
+        .navbar__logo-text {
+          font-family: var(--font-grotesk);
+          font-size: 18px;
+          font-weight: 700;
+          color: #d4a843;
+          letter-spacing: 0.04em;
+          white-space: nowrap;
+          line-height: 1.15;
+          order: -1;
+        }
+
         .navbar__logo img {
-          height: clamp(32px, 5vw, 48px);
+          height: clamp(56px, 8vw, 80px);
           width: auto;
-          border-radius: 4px;
+          border-radius: 0;
+          object-fit: contain;
+          margin: -16px 0;
         }
 
         .navbar__right {
           margin-left: auto;
           display: flex;
           align-items: center;
-          gap: 32px;
+          gap: 24px;
           min-width: 0;
           flex-shrink: 1;
           position: relative;
@@ -80,7 +79,7 @@ const Navbar = ({ onGetFeatured }) => {
         .navbar__links {
           display: flex;
           align-items: center;
-          gap: 40px;
+          gap: 28px;
           flex-wrap: nowrap;
           white-space: nowrap;
         }
@@ -89,7 +88,7 @@ const Navbar = ({ onGetFeatured }) => {
           color: #ffffff;
           text-decoration: none;
           font-family: var(--font-grotesk);
-          font-size: 18px;
+          font-size: 14px;
           font-weight: 500;
           position: relative;
         }
@@ -119,9 +118,9 @@ const Navbar = ({ onGetFeatured }) => {
           background: #ffffff;
           border-radius: 8px;
           color: #1f2230;
-          padding: 18px 32px;
+          padding: 12px 22px;
           font-family: var(--font-grotesk);
-          font-size: 20px;
+          font-size: 14px;
           font-weight: 700;
           border: none;
           cursor: pointer;
@@ -135,7 +134,7 @@ const Navbar = ({ onGetFeatured }) => {
         }
 
         .navbar__cta-title {
-          font-size: 18px;
+          font-size: 14px;
           font-weight: 700;
           line-height: 1.1;
         }
@@ -159,7 +158,7 @@ const Navbar = ({ onGetFeatured }) => {
         }
 
         .navbar__cta:hover {
-          padding: 14px 32px 22px;
+          padding: 10px 22px 18px;
         }
 
         .navbar__auth {
@@ -230,7 +229,7 @@ const Navbar = ({ onGetFeatured }) => {
         /* Scroll down indicator */
 .scroll-indicator {
   position: fixed;
-  top: 14px;
+  bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -238,28 +237,37 @@ const Navbar = ({ onGetFeatured }) => {
   align-items: center;
   gap: 6px;
   font-family: var(--font-grotesk);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #94a3b8;
-  opacity: 0;
-  pointer-events: none;
+  color: #ffffff;
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
   z-index: 999;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.4s ease;
   max-width: 100%;
   width: fit-content;
+  background: rgba(31, 34, 48, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.scroll-indicator.visible {
-  opacity: 1;
+.scroll-indicator.hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 /* Arrow */
 .scroll-indicator .arrow {
   width: 10px;
   height: 10px;
-  border-left: 2px solid #94a3b8;
-  border-bottom: 2px solid #94a3b8;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
   transform: rotate(-45deg);
   animation: bounce 1.6s infinite;
 }
@@ -306,12 +314,17 @@ const Navbar = ({ onGetFeatured }) => {
   }
 
   .navbar {
-    height: 72px;
-    padding: 0 16px;
+    height: 60px;
+    padding: 0 12px;
   }
 
   .navbar__logo img {
-    height: 36px;
+    height: 56px;
+    margin: -10px 0;
+  }
+
+  .navbar__logo-text {
+    font-size: 15px;
   }
 }
       `}</style>
@@ -319,9 +332,9 @@ const Navbar = ({ onGetFeatured }) => {
       {/* Navbar */}
       <nav className="navbar">
        
-        <div className="navbar__logo">
+        <Link to="/" className="navbar__logo">
           <img src="/assets/logo.png" alt="Real Africa" />
-        </div>
+        </Link>
 
         <div className="navbar__right">
           <div className="navbar__links">
@@ -336,7 +349,7 @@ const Navbar = ({ onGetFeatured }) => {
                 background: "transparent",
                 color: "#ffffff",
                 padding: 0,
-                fontSize: "18px",
+                fontSize: "14px",
                 fontWeight: 500,
                 cursor: "pointer",
               }}
@@ -378,16 +391,12 @@ const Navbar = ({ onGetFeatured }) => {
         </div>
       </nav>
 
-      <div className="scroll-indicator">
-          <span>Scroll down to explore</span>
-        <div className="arrow"></div>
-      </div>
 
       {/* Mobile Dropdown */}
       <div className={`mobile-menu ${open ? "open" : ""}`}>
         <Link onClick={() => setOpen(false)} to="/travel">Travel</Link>
         <Link onClick={() => setOpen(false)} to="/">Home</Link>
-        <Link onClick={() => setOpen(false)} to="/blog">Blog</Link>
+        <Link onClick={() => setOpen(false)} to="/interviews">Interviews</Link>
         <Link onClick={() => setOpen(false)} to="/about-us">About Us</Link>
         
         
