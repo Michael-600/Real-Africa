@@ -10,6 +10,15 @@ if (typeof window !== "undefined") {
 }
 
 function FeaturedPosts() {
+  const featured = {
+    author: "Michael H",
+    date: "August 1, 2025",
+    title: "If You Don't Trust Yourself, Take a Job!",
+    summary: "Peter Nduati talks about the harsh realities of the day-to-day entrepreneur.",
+    slug: "scale-leadership-peter-nduati",
+    image: "/assets/nduati.png",
+  };
+
   const posts = [
     {
       author: "Raydon Muregi",
@@ -31,34 +40,6 @@ function FeaturedPosts() {
       title: "The Art of the Scale: Lessons in Leadership and Resilience from Peter Nduati.",
       highlight: true,
       slug: "scale-leadership-peter-nduati",
-    },
-    {
-      author: "Anne Mokua",
-      date: "Sep 2o, 2025",
-      title: "Navigating Borders: How Dr. G. O. Ouma is Using AI to Simplify Global Mobility.",
-      highlight: false,
-      slug: "navigating-borders-g-o-ouma",
-    },
-    {
-      author: "Raydon Muregi",
-      date: "June 10, 2025",
-      title: "You Are a Brand: Nancy Muthoni on the Currencies of Credibility and Excellence.",
-      highlight: false,
-      slug: "you-are-a-brand-nancy-muthoni",
-    },
-    {
-      author: "Michael Hayford",
-      date: "Dec 19, 2024",
-      title: "Data-Driven Success: How Oze is Helping 97% of Small Businesses Thrive Across Africa.",
-      highlight: false,
-      slug: "data-driven-success-oze",
-    },
-    {
-      author: "Raydon Muregi",
-      date: "May 19, 2024",
-      title: "Building with Faith: How Isaac Nyangolo is Using Tech to Heal African Education Systems.",
-      highlight: true,
-      slug: "building-with-faith-isaac-nyangolo",
     },
   ];
 
@@ -96,16 +77,18 @@ function FeaturedPosts() {
           All Posts
         </h2>
 
-        <span
+        <Link
+          to="/articles"
           style={{
             fontSize: 16,
             fontFamily: "inherit",
             color: "var(--accent)",
             cursor: "pointer",
+            textDecoration: "none",
           }}
         >
           View All
-        </span>
+        </Link>
       </div>
 
       <div className="featured-posts-wrapper">
@@ -129,8 +112,8 @@ function FeaturedPosts() {
             }}
           >
             <img
-              src="/assets/nduati.png"
-              alt="Featured"
+              src={featured.image}
+              alt={featured.title}
               style={{
                 width: "100%",
                 aspectRatio: "16 / 9",
@@ -146,7 +129,7 @@ function FeaturedPosts() {
                 color: "var(--text-secondary)",
               }}
             >
-              By <span style={{ color: "var(--accent)" }}>Michael H</span> | May 02, 2025
+              By <span style={{ color: "var(--accent)" }}>{featured.author}</span> | {featured.date}
             </div>
 
             <h3
@@ -158,7 +141,7 @@ function FeaturedPosts() {
                 color: "var(--text-primary)",
               }}
             >
-              If you don't trust yourself take a job!
+              {featured.title}
             </h3>
 
             <p
@@ -170,11 +153,11 @@ function FeaturedPosts() {
                 maxWidth: 600,
               }}
             >
-              Peter Nduati talks about the harsh realities of the day to day entrepreneur.
+              {featured.summary}
             </p>
 
             <Link
-              to="/interviews"
+              to={`/articles/${featured.slug}`}
               style={{ textDecoration: "none", alignSelf: "flex-start", width: "100%", maxWidth: 280 }}
             >
               <button
@@ -215,7 +198,7 @@ function FeaturedPosts() {
             {posts.map((post, i) => (
               <Link
                 key={post.slug}
-                to={`/interviews/${post.slug}`}
+                to={`/articles/${post.slug}`}
                 className="featured-post-card"
                 style={{
                   padding: "20px 24px",

@@ -9,6 +9,7 @@ import MainLayout from './components/Layout/MainLayout';
 import Categories from './pages/categories/opportunities';
 import FeaturedCEOs from './pages/categories/features-ceos';
 import InterviewSelect from './pages/interview-detail';
+import ArticlesPage from './pages/Articles';
 import Technology from './pages/categories/technology';
 import { useAuth } from "./lib/authContext";
 import Auth from "./pages/Auth";
@@ -93,6 +94,7 @@ function App() {
             <GetMentoredPage />
             </ProtectedRoute>} />
           <Route path="/interviews" element={<InterviewPage />} />
+          <Route path="/articles" element={<ArticlesPage />} />
           <Route path="/communities" element={<Communities />} />
           <Route path="/opportunities" element={<Categories />} />
           <Route path="/featured-ceos" element={<FeaturedCEOs />} />
@@ -105,6 +107,7 @@ function App() {
           element={<CommunityPage />}
         />        
           <Route path="/interviews/:slug" element={<InterviewSelect />} />
+          <Route path="/articles/:slug" element={<InterviewSelect />} />
           <Route
             path="/admin"
             element={

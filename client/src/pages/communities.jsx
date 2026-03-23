@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/authContext";
@@ -6,6 +6,27 @@ import {
   Palette, Music, DollarSign, Sparkles, Monitor,
   Carrot, Trophy, BookOpen, Heart, Search
 } from "lucide-react";
+
+const LAUNCH_DATE = new Date("2026-04-15T00:00:00").getTime();
+
+function useCountdown() {
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  useEffect(() => {
+    const tick = () => {
+      const diff = Math.max(0, LAUNCH_DATE - Date.now());
+      setCountdown({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return countdown;
+}
 
 const CATEGORIES = [
   { label: "All", icon: null },
@@ -21,6 +42,7 @@ const CATEGORIES = [
 ];
 
 export default function Communities() {
+    const countdown = useCountdown();
     const [communities, setCommunities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -105,9 +127,29 @@ export default function Communities() {
   
         {/* Hero */}
         <section className="discover-hero">
-          <h1>Get Mentored</h1>
-          
-  
+          <h1>Find Your People</h1>
+          <p className="hero-subtitle">
+            Join communities of creators, builders, and thinkers across Africa. Learn together, grow together.
+          </p>
+
+          <div className="discover-countdown">
+            <span className="discover-countdown__label">Communities launch in</span>
+            <div className="discover-countdown__boxes">
+              {[
+                { value: countdown.days, label: "Days" },
+                { value: countdown.hours, label: "Hrs" },
+                { value: countdown.minutes, label: "Min" },
+                { value: countdown.seconds, label: "Sec" },
+              ].map((u) => (
+                <div key={u.label} className="discover-countdown__box">
+                  <span className="discover-countdown__num">{String(u.value).padStart(2, "0")}</span>
+                  <span className="discover-countdown__unit">{u.label}</span>
+                </div>
+              ))}
+            </div>
+            <span className="discover-countdown__date">April 15, 2026</span>
+          </div>
+
           <div className="search-wrapper">
             <Search size={18} strokeWidth={2} style={{ color: "#9ca3af", flexShrink: 0 }} />
             <input

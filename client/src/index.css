@@ -189,7 +189,7 @@ body::-webkit-scrollbar {
 }
 
 .about-mission__headline {
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.2;
@@ -198,7 +198,7 @@ body::-webkit-scrollbar {
 }
 
 .about-mission__subheadline {
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 2rem;
   font-weight: 700;
   line-height: 1.3;
@@ -216,7 +216,7 @@ body::-webkit-scrollbar {
 .about-mission__cta {
   display: inline-block;
   margin-top: 2rem;
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   font-size: 1.1rem;
   color: #592ea9;
@@ -265,7 +265,7 @@ body::-webkit-scrollbar {
   
   .choose-category__title {
     text-align: center;
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 2.25rem;
     font-weight: 700;
     line-height: 1.3;
@@ -296,17 +296,32 @@ body::-webkit-scrollbar {
     border-radius: 10px;
   }
   
-  /* Icon placeholder */
+  /* Icon */
   .category-card__icon {
     width: 48px;
     height: 48px;
     background: #fbf6ea;
     margin-bottom: 2.5rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c9922a;
+  }
+
+  .category-card__icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .category-card--featured .category-card__icon {
+    background: #232536;
+    color: #ffd050;
   }
   
   /* Title */
   .category-card__title {
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 1.75rem;
     font-weight: 700;
     line-height: 1.4;
@@ -316,7 +331,7 @@ body::-webkit-scrollbar {
   
   /* Description */
   .category-card__desc {
-    font-family: "Inter", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 1rem;
     line-height: 1.75;
     color: #6d6e76;
@@ -388,7 +403,7 @@ body::-webkit-scrollbar {
 
 /* Eyebrow */
 .special-post__eyebrow {
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 3px;
@@ -399,7 +414,7 @@ body::-webkit-scrollbar {
 
 /* Title */
 .special-post__title {
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 3rem;
   font-weight: 700;
   line-height: 1.35;
@@ -409,7 +424,7 @@ body::-webkit-scrollbar {
 
 /* Body */
 .special-post__body {
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
   line-height: 1.75;
   color: #6d6e76;
@@ -423,7 +438,7 @@ body::-webkit-scrollbar {
   padding: 1rem 3rem;
   background: #ffd050;
   border-radius: 20px;
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: #232536;
@@ -476,7 +491,7 @@ body::-webkit-scrollbar {
   
   .team__title {
     text-align: center;
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 2.25rem;
     font-weight: 700;
     line-height: 1.3;
@@ -517,7 +532,7 @@ body::-webkit-scrollbar {
   
   /* Name */
   .team-card__name {
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 1.75rem;
     font-weight: 700;
     color: #232536;
@@ -526,7 +541,7 @@ body::-webkit-scrollbar {
   
   /* Role */
   .team-card__role {
-    font-family: "Inter", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 0.875rem;
     color: #6d6e76;
     margin-bottom: 1.5rem;
@@ -592,7 +607,7 @@ body::-webkit-scrollbar {
 }
 
 .testimonials__eyebrow {
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 3px;
@@ -602,7 +617,7 @@ body::-webkit-scrollbar {
 }
 
 .testimonials__title {
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.3;
@@ -611,7 +626,7 @@ body::-webkit-scrollbar {
 }
 
 .testimonials__description {
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
   line-height: 1.75;
   color: #232536;
@@ -634,7 +649,7 @@ body::-webkit-scrollbar {
 }
 
 .testimonials__quote {
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.4;
@@ -658,14 +673,14 @@ body::-webkit-scrollbar {
 }
 
 .testimonials__name {
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   color: #232536;
 }
 
 .testimonials__role {
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
   color: #6d6e76;
 }
@@ -717,7 +732,7 @@ body::-webkit-scrollbar {
   
   /* Title */
   .membership-card__title {
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 1.75rem;
     font-weight: 700;
     line-height: 1.3;
@@ -727,7 +742,7 @@ body::-webkit-scrollbar {
   
   /* Description */
   .membership-card__description {
-    font-family: "Inter", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 0.95rem;
     line-height: 1.65;
     color: #6d6e76;
@@ -740,7 +755,7 @@ body::-webkit-scrollbar {
     padding: 0.75rem 3rem;
     background: #14b8a6; /* teal */
     color: #ffffff;
-    font-family: "DM Sans", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: none;
@@ -785,7 +800,7 @@ body::-webkit-scrollbar {
 }
 
 .footer__nav a {
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
   color: #ffffff;
   opacity: 0.9;
@@ -806,7 +821,7 @@ body::-webkit-scrollbar {
 
 .footer__newsletter-title {
   max-width: 560px;
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 2.25rem;
   font-weight: 700;
   line-height: 1.3;
@@ -823,7 +838,7 @@ body::-webkit-scrollbar {
   background: transparent;
   border: 1px solid #6d6e76;
   color: #ffffff;
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
   border-radius: 10px 0 0 10px;
 }
@@ -836,7 +851,7 @@ body::-webkit-scrollbar {
   padding: 0.75rem 2rem;
   background: #fcd34d; /* amber */
   border: none;
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: #232536;
@@ -859,7 +874,7 @@ body::-webkit-scrollbar {
 }
 
 .footer__contact {
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
   opacity: 0.7;
 }
@@ -1352,7 +1367,7 @@ body {
   padding: 16px 32px;
   background: #fcd34d;
   border: none;
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   font-size: 18px;
   color: #1f2937;
@@ -1364,7 +1379,7 @@ body {
   position: absolute;
   left: 80px;
   top: 80px;
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 14px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -1377,7 +1392,7 @@ body {
   left: 80px;
   top: 120px;
   max-width: 620px;
-  font-family: "Sen", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 32px;
   font-weight: 700;
   line-height: 1.3;
@@ -1389,7 +1404,7 @@ body {
   position: absolute;
   left: 80px;
   top: 210px;
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 14px;
   z-index: 1;
 }
@@ -1408,7 +1423,7 @@ body {
   left: 80px;
   top: 250px;
   max-width: 620px;
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 16px;
   line-height: 1.75;
   color: #6b7280;
@@ -1493,7 +1508,7 @@ body {
   }
   
   .all-interviews-header h2 {
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 48px;
     font-weight: 700;
     line-height: 64px;
@@ -1538,7 +1553,7 @@ body {
   
   .interview-content .category {
     display: block;
-    font-family: "Inter", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 3px;
@@ -1548,7 +1563,7 @@ body {
   }
   
   .interview-content h3 {
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 32px;
     font-weight: 700;
     line-height: 1.3;
@@ -1557,7 +1572,7 @@ body {
   }
   
   .interview-content p {
-    font-family: "Inter", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 16px;
     line-height: 28px;
     color: #6b7280;
@@ -1584,7 +1599,7 @@ body {
     max-width: 240px;
     display: flex;
     justify-content: space-between;
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-weight: 700;
   }
   
@@ -1608,7 +1623,7 @@ body {
   }
   
   .categories h2 {
-    font-family: "Sen", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     font-size: 36px;
     font-weight: 700;
     line-height: 48px;
@@ -3574,7 +3589,7 @@ body.loading {
   flex-direction: column;
   align-items: center;
   background-color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   color: #1f2937; /* gray-800 */
 }
 
@@ -3603,7 +3618,7 @@ body.loading {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.75rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .hero-breadcrumb {
@@ -3617,7 +3632,7 @@ body.loading {
   text-transform: uppercase;
   letter-spacing: 0.1875em; /* 3px tracking */
   line-height: 1.25rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .hero-title {
@@ -3627,7 +3642,7 @@ body.loading {
   width: 384px; /* 96 * 4 */
   text-align: center;
   color: #1f2937; /* gray-800 */
-  font-family: 'Sen', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
   font-size: 3.75rem; /* 6xl */
   line-height: 64px;
@@ -3684,7 +3699,7 @@ body.loading {
   font-size: 0.75rem; /* text-xs */
   font-weight: 400;
   color: #000000;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .job-title {
@@ -3698,13 +3713,13 @@ body.loading {
   font-size: 0.75rem; /* xs */
   color: #71717a; /* zinc-600 */
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .job-salary {
   font-size: 0.75rem; /* xs */
   color: #525252; /* zinc-700 */
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .apply-btn {
@@ -3717,7 +3732,7 @@ body.loading {
   background-color: transparent;
   color: black;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   transition: background-color 0.3s, color 0.3s;
 }
 
@@ -3790,7 +3805,7 @@ body.loading {
   border: 2px solid #9ca3af;
   background: #ffffff;
 
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
   color: #6b7280;
@@ -3928,7 +3943,7 @@ body.loading {
     max-width: 1292px;
     margin: 0 auto;
     padding: 64px 24px;
-    font-family: "Inter", sans-serif;
+    font-family: "Space Grotesk", sans-serif;
   }
   
   /* ---------- Header ---------- */
@@ -4579,10 +4594,12 @@ body.loading {
    BASE
    ========================= */
 
+.discover-page {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
   background: var(--bg-page);
   color: var(--text-main);
 }
@@ -4606,6 +4623,7 @@ body {
 }
 
 .logo {
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
   font-size: 22px;
 }
@@ -4631,9 +4649,20 @@ body {
 }
 
 .discover-hero h1 {
-  font-size: 40px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(32px, 5vw, 48px);
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
+  color: #1f2230;
+}
+
+.discover-hero .hero-subtitle {
+  margin: 0 auto;
+  max-width: 520px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--text-muted);
 }
 
 .discover-hero p {
@@ -4651,6 +4680,65 @@ body {
    SEARCH
    ========================= */
 
+/* Communities page countdown */
+.discover-countdown {
+  margin: 28px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.discover-countdown__label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.discover-countdown__boxes {
+  display: flex;
+  gap: 8px;
+}
+
+.discover-countdown__box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #1f2230;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 52px;
+}
+
+.discover-countdown__num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.discover-countdown__unit {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.discover-countdown__date {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #c9922a;
+}
+
 .search-wrapper {
   margin: 32px auto 0;
   position: relative;
@@ -4662,6 +4750,7 @@ body {
   padding: 16px 18px 16px 44px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 16px;
   outline: none;
 }
@@ -4692,7 +4781,9 @@ body {
   border-radius: var(--radius-pill);
   border: 1px solid var(--border-light);
   background: var(--pill-bg);
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 14px;
+  font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -4835,6 +4926,87 @@ body {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow-card);
+}
+
+/* Countdown Timer */
+.launch-countdown {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px 16px;
+  background: #f8fafc;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+}
+
+.launch-countdown__label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin: 0 0 12px;
+}
+
+.launch-countdown__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.launch-countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.launch-countdown__value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2230;
+  line-height: 1;
+}
+
+.launch-countdown__unitlabel {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.launch-countdown__date {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c9922a;
+  margin: 14px 0 0;
+}
+
+/* Request Form */
+.request-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.request-form__input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.request-form__input:focus {
+  outline: none;
+  border-color: #1f2230;
 }
 
 .community-landing-video iframe {

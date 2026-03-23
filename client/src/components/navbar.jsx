@@ -41,28 +41,34 @@ const Navbar = ({ onGetFeatured }) => {
         .navbar__logo {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           text-decoration: none;
           flex-shrink: 0;
         }
 
-        .navbar__logo-text {
-          font-family: var(--font-grotesk);
-          font-size: 18px;
-          font-weight: 700;
-          color: #d4a843;
-          letter-spacing: 0.04em;
-          white-space: nowrap;
-          line-height: 1.15;
-          order: -1;
-        }
-
         .navbar__logo img {
-          height: clamp(56px, 8vw, 80px);
+          height: 44px;
           width: auto;
           border-radius: 0;
           object-fit: contain;
-          margin: -16px 0;
+        }
+
+        .navbar__logo-text {
+          font-family: var(--font-grotesk);
+          font-size: 16px;
+          font-weight: 700;
+          white-space: nowrap;
+          line-height: 1.2;
+        }
+
+        .navbar__logo-text .the-real {
+          color: #ffffff;
+        }
+
+        .navbar__logo-text .africa {
+          color: #d4a843;
+          font-size: 18px;
+          letter-spacing: 0.08em;
         }
 
         .navbar__right {
@@ -319,11 +325,14 @@ const Navbar = ({ onGetFeatured }) => {
   }
 
   .navbar__logo img {
-    height: 56px;
-    margin: -10px 0;
+    height: 38px;
   }
 
   .navbar__logo-text {
+    font-size: 13px;
+  }
+
+  .navbar__logo-text .africa {
     font-size: 15px;
   }
 }
@@ -334,6 +343,10 @@ const Navbar = ({ onGetFeatured }) => {
        
         <Link to="/" className="navbar__logo">
           <img src="/assets/logo.png" alt="Real Africa" />
+          <span className="navbar__logo-text">
+            <span className="the-real">The Real</span><br/>
+            <span className="africa">AFRICA</span>
+          </span>
         </Link>
 
         <div className="navbar__right">
@@ -365,8 +378,7 @@ const Navbar = ({ onGetFeatured }) => {
             state={{ from: "mentored" }}
             className="navbar__cta"
           >
-            <span className="navbar__cta-title">Get Mentored</span>
-            <span className="navbar__cta-subtitle">View Communities</span>
+            <span className="navbar__cta-title">Explore Communities</span>
           </Link>
 
           {user && profile ? (
@@ -425,7 +437,7 @@ const Navbar = ({ onGetFeatured }) => {
           className="mobile-cta"
           state={{ from: "mentored" }}
         >
-          Get Mentored
+          Explore Communities
         </Link>
 
         {!user && (

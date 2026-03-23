@@ -128,6 +128,57 @@ export default function CommunityPage() {
   const [joinLoading, setJoinLoading] = React.useState(false);
   const [joinSuccess, setJoinSuccess] = React.useState(false);
 
+  const [showRequestForm, setShowRequestForm] = React.useState(false);
+  const [requestForm, setRequestForm] = React.useState({ name: "", email: "", reason: "" });
+  const [requestLoading, setRequestLoading] = React.useState(false);
+  const [requestSuccess, setRequestSuccess] = React.useState(false);
+  const [requestError, setRequestError] = React.useState("");
+
+  const handleRequestSubmit = async () => {
+    setRequestError("");
+    if (!requestForm.name || !requestForm.email) {
+      setRequestError("Name and email are required.");
+      return;
+    }
+    setRequestLoading(true);
+    const { error: insertError } = await supabase
+      .from("community_join_requests")
+      .insert({
+        community_slug: slug,
+        community_name: community?.name || slug,
+        full_name: requestForm.name,
+        email: requestForm.email,
+        reason: requestForm.reason || null,
+        user_id: user?.id || null,
+      });
+    if (insertError) {
+      console.error("Join request error:", insertError);
+      setRequestError("Something went wrong. Please try again.");
+    } else {
+      setRequestSuccess(true);
+    }
+    setRequestLoading(false);
+  };
+
+  const LAUNCH_DATE = new Date("2026-04-15T00:00:00").getTime();
+  const [countdown, setCountdown] = React.useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  React.useEffect(() => {
+    const tick = () => {
+      const now = Date.now();
+      const diff = Math.max(0, LAUNCH_DATE - now);
+      setCountdown({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   React.useEffect(() => {
     let mounted = true;
     const loadCommunity = async () => {
@@ -251,78 +302,80 @@ export default function CommunityPage() {
             <strong>{community.price || "Free"}</strong>
           </div>
 
-          {!user && (
-            <button
-              className="community-landing__cta"
-              onClick={() =>
-                navigate("/auth", { state: { from: `/communities/${slug}` } })
-              }
-            >
-              Sign in to join
-            </button>
-          )}
+          {/* Countdown Timer */}
+          <div className="launch-countdown">
+            <p className="launch-countdown__label">Launching in</p>
+            <div className="launch-countdown__grid">
+              {[
+                { value: countdown.days, label: "Days" },
+                { value: countdown.hours, label: "Hrs" },
+                { value: countdown.minutes, label: "Min" },
+                { value: countdown.seconds, label: "Sec" },
+              ].map((unit) => (
+                <div key={unit.label} className="launch-countdown__unit">
+                  <span className="launch-countdown__value">{String(unit.value).padStart(2, "0")}</span>
+                  <span className="launch-countdown__unitlabel">{unit.label}</span>
+                </div>
+              ))}
+            </div>
+            <p className="launch-countdown__date">April 15, 2026</p>
+          </div>
 
-          {joinSuccess && (
-            <p
-              className="community-landing__success"
-              style={{ color: "#16a34a", fontWeight: 600, marginBottom: 8 }}
-              role="status"
-            >
-              You've joined successfully!
-            </p>
-          )}
-          {user && !isJoined && (
+          {/* Request to Join */}
+          {requestSuccess ? (
+            <div style={{ textAlign: "center", padding: "12px 0" }}>
+              <p style={{ color: "#16a34a", fontWeight: 700, fontSize: 16, marginBottom: 6 }}>
+                Request submitted!
+              </p>
+              <p style={{ color: "#64748b", fontSize: 13 }}>
+                We'll notify you when the community opens.
+              </p>
+            </div>
+          ) : !showRequestForm ? (
             <button
               className="community-landing__cta"
-              disabled={joinLoading}
-              onClick={async (e) => {
-                e.preventDefault();
-                setJoinLoading(true);
-                setJoinSuccess(false);
-                const { data, error: joinError } = await supabase
-                  .from("community_memberships")
-                  .insert({
-                    community_id: community.id,
-                    user_id: user.id,
-                  })
-                  .select();
-                if (joinError) {
-                  setJoinLoading(false);
-                  if (joinError.code === "23505") {
-                    setIsJoined(true);
-                    setJoinSuccess(true);
-                    return;
-                  }
-                  console.error("[Join] Supabase error:", joinError);
-                  return;
-                }
-                setIsJoined(true);
-                setJoinSuccess(true);
-                setCommunity((prev) =>
-                  prev ? { ...prev, members_count: (prev.members_count || 0) + 1 } : prev
-                );
-                setJoinLoading(false);
-                setTimeout(() => setJoinSuccess(false), 4000);
-                try {
-                  await trackReferralConversion("join_community", slug);
-                } catch (err) {
-                  if (err?.name !== "AbortError") {
-                    console.error("Referral tracking failed:", err);
-                  }
+              onClick={() => {
+                setShowRequestForm(true);
+                if (user) {
+                  setRequestForm((f) => ({ ...f, email: user.email || "" }));
                 }
               }}
             >
-              {joinLoading ? "Joining…" : "Join community"}
+              Request to Join Group
             </button>
-          )}
-
-          {user && isJoined && hasCommunityApp && (
-            <button
-              className="community-landing__cta"
-              onClick={() => setHasEntered(true)}
-            >
-              Enter community
-            </button>
+          ) : (
+            <div className="request-form">
+              {requestError && (
+                <p style={{ color: "#b91c1c", fontSize: 13, marginBottom: 8 }}>{requestError}</p>
+              )}
+              <input
+                className="request-form__input"
+                placeholder="Your full name"
+                value={requestForm.name}
+                onChange={(e) => setRequestForm({ ...requestForm, name: e.target.value })}
+              />
+              <input
+                className="request-form__input"
+                placeholder="Email address"
+                type="email"
+                value={requestForm.email}
+                onChange={(e) => setRequestForm({ ...requestForm, email: e.target.value })}
+              />
+              <textarea
+                className="request-form__input"
+                placeholder="Why do you want to join? (optional)"
+                rows={3}
+                value={requestForm.reason}
+                onChange={(e) => setRequestForm({ ...requestForm, reason: e.target.value })}
+              />
+              <button
+                className="community-landing__cta"
+                onClick={handleRequestSubmit}
+                disabled={requestLoading}
+              >
+                {requestLoading ? "Submitting..." : "Submit Request"}
+              </button>
+            </div>
           )}
         </div>
       </div>
