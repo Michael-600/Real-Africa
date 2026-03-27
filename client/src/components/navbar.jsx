@@ -7,6 +7,7 @@ import AccountMenu from "./AccountMenu";
 
 const Navbar = ({ onGetFeatured }) => {
   const [open, setOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const location = useLocation();
   const { user, profile } = useAuth();
 
@@ -182,6 +183,76 @@ const Navbar = ({ onGetFeatured }) => {
           border-color: #ffffff;
         }
 
+        .navbar__more-wrapper {
+          position: relative;
+        }
+
+        .navbar__more-btn {
+          background: none;
+          border: none;
+          color: #ffffff;
+          font-family: var(--font-grotesk);
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 0;
+        }
+
+        .navbar__more-btn svg {
+          width: 14px;
+          height: 14px;
+          transition: transform 0.2s ease;
+        }
+
+        .navbar__more-btn.open svg {
+          transform: rotate(180deg);
+        }
+
+        .navbar__more-dropdown {
+          position: absolute;
+          top: calc(100% + 14px);
+          left: 50%;
+          transform: translateX(-50%);
+          background: #ffffff;
+          border-radius: 12px;
+          box-shadow: 0 10px 32px rgba(0, 0, 0, 0.12);
+          min-width: 180px;
+          padding: 8px 0;
+          z-index: 1100;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.15s ease, transform 0.15s ease;
+          transform: translateX(-50%) translateY(-6px);
+        }
+
+        .navbar__more-dropdown.show {
+          opacity: 1;
+          pointer-events: auto;
+          transform: translateX(-50%) translateY(0);
+        }
+
+        .navbar__more-dropdown a {
+          display: block;
+          padding: 10px 20px;
+          font-family: var(--font-grotesk);
+          font-size: 14px;
+          font-weight: 500;
+          color: #1f2230;
+          text-decoration: none;
+          transition: background 0.12s ease;
+        }
+
+        .navbar__more-dropdown a:hover {
+          background: #f8fafc;
+        }
+
+        .navbar__more-dropdown a::after {
+          display: none !important;
+        }
+
         /* Hamburger */
         .menu-btn {
           display: none;
@@ -351,11 +422,29 @@ const Navbar = ({ onGetFeatured }) => {
 
         <div className="navbar__right">
           <div className="navbar__links">
-            
             <Link to="/">Home</Link>
             <Link to="/about-us">About Us</Link>
             <Link to="/travel">Travel</Link>
-            
+
+            <div
+              className="navbar__more-wrapper"
+              onMouseEnter={() => setMoreOpen(true)}
+              onMouseLeave={() => setMoreOpen(false)}
+            >
+              <button className={`navbar__more-btn${moreOpen ? " open" : ""}`}>
+                More
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <div className={`navbar__more-dropdown${moreOpen ? " show" : ""}`}>
+                <Link to="/articles" onClick={() => setMoreOpen(false)}>Articles</Link>
+                <Link to="/interviews" onClick={() => setMoreOpen(false)}>Interviews</Link>
+                <Link to="/opportunities" onClick={() => setMoreOpen(false)}>Opportunities</Link>
+                <Link to="/featured-ceos" onClick={() => setMoreOpen(false)}>Featured CEOs</Link>
+              </div>
+            </div>
+
             <button
               className="navbar__cta"
               style={{
@@ -370,7 +459,6 @@ const Navbar = ({ onGetFeatured }) => {
             >
               Get Featured
             </button>
-            
           </div>
           
           <Link
@@ -406,10 +494,12 @@ const Navbar = ({ onGetFeatured }) => {
 
       {/* Mobile Dropdown */}
       <div className={`mobile-menu ${open ? "open" : ""}`}>
-        <Link onClick={() => setOpen(false)} to="/travel">Travel</Link>
         <Link onClick={() => setOpen(false)} to="/">Home</Link>
-        <Link onClick={() => setOpen(false)} to="/interviews">Interviews</Link>
         <Link onClick={() => setOpen(false)} to="/about-us">About Us</Link>
+        <Link onClick={() => setOpen(false)} to="/travel">Travel</Link>
+        <Link onClick={() => setOpen(false)} to="/articles">Articles</Link>
+        <Link onClick={() => setOpen(false)} to="/interviews">Interviews</Link>
+        <Link onClick={() => setOpen(false)} to="/opportunities">Opportunities</Link>
         
         
     

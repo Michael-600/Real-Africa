@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 if (typeof window !== "undefined") {
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -32,7 +33,7 @@ const AboutMission = () => {
               future.
             </p>
 
-            <a href="#" className="about-mission__cta">Read More →</a>
+            <Link to="/about-us" className="about-mission__cta">Read More &rarr;</Link>
           </div>
 
           {/* Mission */}

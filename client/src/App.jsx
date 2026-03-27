@@ -21,6 +21,8 @@ import AdminLayout from "../admin/AdminLayout";
 import AdminDashboard from "../admin/AdminDashboard";
 import AdminUsers from "../admin/AdminUsers";
 import { CoursesPage, CoursePlayerPage } from "./pages/get-mentored";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 
 
@@ -108,6 +110,8 @@ function App() {
         />        
           <Route path="/interviews/:slug" element={<InterviewSelect />} />
           <Route path="/articles/:slug" element={<InterviewSelect />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
           <Route
             path="/admin"
             element={
