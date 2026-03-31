@@ -35,11 +35,11 @@ function FeaturedPosts() {
       slug: "curiosity-to-inclusion-elly-savatia",
     },
     {
-      author: "Raydon Muregi",
-      date: "December 9, 2025",
-      title: "The Art of the Scale: Lessons in Leadership and Resilience from Peter Nduati.",
+      author: "Anne Mokua",
+      date: "September 20, 2025",
+      title: "Navigating Borders: How Dr. G. O. Ouma is Using AI to Simplify Global Mobility.",
       highlight: true,
-      slug: "scale-leadership-peter-nduati",
+      slug: "navigating-borders-g-o-ouma",
     },
   ];
 
