@@ -2369,56 +2369,6 @@ body {
     background: #fbbf24;
   }
   
-  /* ================= CREATIVES ================= */
-  
-  .about-creatives {
-    padding: 6rem 1.5rem;
-  }
-  
-  .about-creatives-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-  }
-  
-  .about-creatives-text h2 {
-    font-size: 2.5rem;
-  }
-  
-  .about-creatives-text h3 {
-    margin-top: 1rem;
-    font-size: 1.25rem;
-  }
-  
-  .about-creatives-text p {
-    margin-top: 1rem;
-    color: #6b7280;
-    line-height: 1.7;
-  }
-  
-  .about-creatives-media {
-    position: relative;
-  }
-  
-  .about-creatives-media img {
-    width: 100%;
-    position: relative;
-    z-index: 2;
-  }
-  
-  .accent-box {
-    position: absolute;
-    width: 96px;
-    height: 120px;
-    background: #fbbf24;
-    left: -24px;
-    top: 36px;
-    z-index: 1;
-  }
-  
   /* ================= WHY ================= */
   
   .about-why {
@@ -2446,8 +2396,7 @@ body {
   /* ================= MOBILE ================= */
   
   @media (max-width: 768px) {
-    .about-hero-inner,
-    .about-creatives-inner {
+    .about-hero-inner {
       grid-template-columns: 1fr;
       gap: 2.5rem;
     }
@@ -2512,33 +2461,6 @@ body {
   }
 
   .stats-bars {
-    display: none;
-  }
-
-  /* CREATIVES */
-  .about-creatives {
-    padding: 4rem 0;
-  }
-
-  .about-creatives-inner {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .about-creatives-text h2 {
-    font-size: 1.5rem;
-  }
-
-  .about-creatives-text h3 {
-    font-size: 0.95rem;
-  }
-
-  .about-creatives-media img {
-    width: 100%;
-    height: auto;
-  }
-
-  .accent-box {
     display: none;
   }
 
