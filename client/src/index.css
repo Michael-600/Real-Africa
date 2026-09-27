@@ -5511,6 +5511,16 @@ body {
   }
 }
 
+.interview-hero.interview-hero--banner img {
+  width: min(100%, 920px);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  object-fit: cover;
+  border: none;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
 /* Page container */
 .auth-container {
   min-height: 100vh;
@@ -6624,4 +6634,11 @@ body {
 
 .interview-body li {
   margin-bottom: 0.5rem;
+}
+
+.interview-body a {
+  color: #c9922a;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

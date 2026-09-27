@@ -21,12 +21,13 @@ function FeaturedPosts() {
   }, []);
 
   const featured = {
-    author: "Michael H",
-    date: "August 1, 2025",
-    title: "If You Don't Trust Yourself, Take a Job!",
-    summary: "Peter Nduati talks about the harsh realities of the day-to-day entrepreneur.",
-    slug: "scale-leadership-peter-nduati",
-    image: "/assets/nduati.png",
+    author: "Raydon Muregi",
+    date: "September 27, 2026",
+    title: "What BIG's $1.5 Million Raise Means for Africa",
+    summary:
+      "Biochar Industrial Group's $1.5 million pre-seed is a vote of confidence in an African model for industrial carbon removal.",
+    slug: "what-bigs-1-5-million-raise-means-for-africa",
+    image: "/assets/big-raise.jpg",
   };
 
   const posts = [

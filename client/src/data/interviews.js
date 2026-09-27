@@ -1,6 +1,37 @@
 
 export const interviews = [
   {
+    slug: "what-bigs-1-5-million-raise-means-for-africa",
+    title: "What BIG's $1.5 Million Raise Means for Africa",
+    author: "Raydon Muregi",
+    date: "September 27, 2026",
+    heroImage: "/assets/big-raise.jpg",
+    heroShape: "banner",
+    summary:
+      "Biochar Industrial Group's $1.5 million pre-seed is a vote of confidence in an African model for industrial carbon removal.",
+    body: `Every so often, a story comes along that captures exactly where African innovation is heading. The recent $1.5 million pre-seed raise by Biochar Industrial Group (BIG) is one of those stories.
+
+The round was led by Breega, with participation from The Catalyst Fund and additional non-dilutive support from the Mulago Foundation. For a company tackling one of the continent's most stubborn problems, this is a powerful vote of confidence.
+
+At The Real Africa, this milestone is personal. One of our co-founders had the opportunity to work alongside the BIG team, and the impression was lasting. This is a team that pushes itself relentlessly. They are hardworking, deeply technical, and genuinely committed to the problem they have chosen. In a field where the challenges are complex and the wins are hard-earned, that kind of commitment is everything.
+
+So what exactly does BIG do? It tackles a problem hiding in plain sight. Across Africa, food processing factories generate enormous volumes of agricultural residue every year, from palm kernel shells to sawdust to nut shell cake. Most of it is burned or discarded. BIG installs equipment directly at these factories, converts that residue into biochar through a process called pyrolysis, and turns it into verified carbon removal credits. The revenue is then shared with the host factories.
+
+The elegance of the model is that it solves several problems at once. Factories earn new revenue from waste they used to throw away. The atmosphere gains durable carbon removal that can last for centuries. And Africa positions itself not as a bystander in the global climate economy, but as a leader in it.
+
+That is what makes this raise so significant. For too long, climate solutions have been designed elsewhere and applied to Africa. BIG flips that script: an African company, solving an African problem, with a model built for African realities, now backed by serious international capital to scale it.
+
+The timing could not be better. Global demand for high-quality, verified carbon removal is growing, and buyers are increasingly careful about where their credits come from. BIG's approach, rooted in real industrial processes and measurable outcomes, is exactly the kind of credibility the market is looking for.
+
+For the continent, the implications run deep. If this model scales across West and East Africa, it could unlock a new revenue stream for the agro-processing sector, create skilled technical jobs, and establish Africa as a genuine hub for industrial carbon removal. That is not just climate action. That is economic transformation.
+
+At The Real Africa, we believe stories like this deserve to be told loudly. Not because the journey is finished, but because this is exactly the kind of ambitious, grounded building that will define the continent's next decade.
+
+To the entire BIG team: congratulations. You have earned this moment, and the work ahead is worthy of the belief now placed in you.
+
+Are you a food processor or agribusiness sitting on large volumes of agricultural residue? BIG is actively expanding its network of factory partners across Africa. If you're interested in exploring what a partnership could look like, [start the conversation here](https://industrialbiochar.com/?ref=muregi).`,
+  },
+  {
     slug: "climate-innovation-uzoma-ayogu",
     title: "Climate Innovation: Uzoma Ayogu's Green Tech Revolution",
     author: "Raydon Muregi",

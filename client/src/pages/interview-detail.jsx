@@ -97,7 +97,11 @@ const InterviewSelect = () => {
       </header>
 
       {/* Contained Hero Image */}
-      <div className="interview-hero">
+      <div
+        className={`interview-hero${
+          interview.heroShape === "banner" ? " interview-hero--banner" : ""
+        }`}
+      >
         <img src={interview.heroImage} alt={interview.title} />
       </div>
 
@@ -114,6 +118,11 @@ const InterviewSelect = () => {
               ul: ({ children }) => <ul>{children}</ul>,
               ol: ({ children }) => <ol>{children}</ol>,
               li: ({ children }) => <li>{children}</li>,
+              a: ({ href, children }) => (
+                <a href={href} target="_blank" rel="noopener noreferrer">
+                  {children}
+                </a>
+              ),
               br: () => <br />,
             }}
           >
