@@ -2,7 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { interviews } from "../data/interviews";
 
-const articles = interviews.slice(0, 4);
+const ARTICLE_SLUGS = [
+  "scale-leadership-peter-nduati",
+  "climate-innovation-uzoma-ayogu",
+  "curiosity-to-inclusion-elly-savatia",
+  "navigating-borders-g-o-ouma",
+];
+const articles = ARTICLE_SLUGS.map(s => interviews.find(i => i.slug === s)).filter(Boolean);
 
 export default function Articles() {
   return (

@@ -30,7 +30,7 @@ const videoInterviews = [
     role: "Tech Advocate & Engineer",
     date: "June 22, 2025",
     duration: "35 min",
-    thumbnail: "/assets/elly.jpg",
+    thumbnail: "/assets/Elly-Savatia.jpg",
     videoUrl: null,
     comingSoon: true,
   },

@@ -65,30 +65,6 @@ export default function AboutUs() {
       {/* ================= MISSION ================= */}
       <AboutMission />
 
-      {/* ================= CREATIVES ================= */}
-      <section className="about-creatives container">
-        <div className="about-creatives-inner">
-          <div className="about-creatives-text">
-            <h2>Our team of creatives</h2>
-            <h3>
-              Writers, producers, and strategists passionate about amplifying
-              Africa's untold stories.
-            </h3>
-            <p>
-              From in-depth interviews with founders to on-the-ground travel
-              coverage, our team combines journalism, technology, and local
-              expertise to create content that informs, inspires, and connects
-              communities across the continent and beyond.
-            </p>
-          </div>
-
-          <div className="about-creatives-media">
-            <span className="accent-box" />
-            <img src="https://placehold.co/578x304" alt="Creative team" />
-          </div>
-        </div>
-      </section>
-
       {/* ================= WHY WE STARTED ================= */}
       <section className="about-why container centered">
         <h2>Why we started this company</h2>
