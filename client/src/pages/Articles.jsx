@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { interviews } from "../data/interviews";
 
 const ARTICLE_SLUGS = [
+  "what-bigs-1-5-million-raise-means-for-africa",
   "scale-leadership-peter-nduati",
   "climate-innovation-uzoma-ayogu",
   "curiosity-to-inclusion-elly-savatia",
